@@ -2,6 +2,7 @@
 #include "Sprite.cpp"
 #include <iostream>
 #include "Player.cpp"
+#include "Constants.h"
 
 /*
 To compile 
@@ -9,11 +10,6 @@ To compile
 	./Game
 */
 
-
-
-//Put these in a namespace where all constants are
-int SCREEN_WIDTH = 640;
-int SCREEN_HEIGHT = 480;
 
 int main( int argc, char* argv[] )
 {
@@ -24,7 +20,7 @@ int main( int argc, char* argv[] )
 	SDL_WM_SetCaption("Game", "Game");
 
 	/* create window */
-	SDL_Surface* screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0);
+	SDL_Surface* screen = SDL_SetVideoMode(Constants::SCREEN_WIDTH, Constants::SCREEN_HEIGHT, 0, 0);
 
 	/* load bitmap to temp surface */
 	SDL_Surface* temp = SDL_LoadBMP("lib/background.bmp");
