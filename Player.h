@@ -27,7 +27,11 @@ public:
 
 	void moveRight(bool m);
 
+<<<<<<< HEAD
 	void move(float dt);
+=======
+	void move();
+>>>>>>> 9a289092e58439612a755c1c6e6377699ab95fa4
 
 	//TODO: add more functionality
 

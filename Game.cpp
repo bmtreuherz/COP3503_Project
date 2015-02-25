@@ -3,7 +3,10 @@
 #include <iostream>
 #include "Player.cpp"
 #include "Constants.h"
+<<<<<<< HEAD
 #include "Timer.cpp"
+=======
+>>>>>>> 9a289092e58439612a755c1c6e6377699ab95fa4
 
 /*
 To compile 
@@ -11,6 +14,10 @@ To compile
 	./Game
 */
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9a289092e58439612a755c1c6e6377699ab95fa4
 int main( int argc, char* argv[] )
 {
 	/* initialize SDL */
@@ -37,8 +44,11 @@ int main( int argc, char* argv[] )
 	//create player object
 	Player hero(100, 100, Sprite::Load("lib/mario.bmp"));
 
+<<<<<<< HEAD
 	//Testing timer
 	Timer* timer = new Timer();
+=======
+>>>>>>> 9a289092e58439612a755c1c6e6377699ab95fa4
 	
 	/* message pump */
 	while (!gameover)
@@ -59,12 +69,21 @@ int main( int argc, char* argv[] )
 						case SDLK_q:
 							gameover = 1;
 							break;
+<<<<<<< HEAD
 						case SDLK_DOWN:
 							hero.moveDown(true);
 							break;
 						case SDLK_UP:
 							hero.moveUp(true);
 							break;
+=======
+						case SDLK_UP:
+							hero.moveUp(true);
+							break;
+						case SDLK_DOWN:
+							hero.moveDown(true);
+							break;
+>>>>>>> 9a289092e58439612a755c1c6e6377699ab95fa4
 						case SDLK_RIGHT:
 							hero.moveRight(true);
 							break;
@@ -95,8 +114,14 @@ int main( int argc, char* argv[] )
 		SDL_BlitSurface(bg, NULL, screen, NULL);
 
 		//Draw the sprite and update his position
+<<<<<<< HEAD
 		hero.move(timer->getDT());
 		Sprite::Draw(screen, hero.getSurface(), hero.getX(),hero.getY());
+=======
+		hero.move();
+		Sprite::Draw(screen, hero.getSurface(), hero.getX(),hero.getY());
+;
+>>>>>>> 9a289092e58439612a755c1c6e6377699ab95fa4
 
 		/* update the screen */
 		SDL_UpdateRect(screen, 0, 0, 0, 0);
@@ -108,7 +133,10 @@ int main( int argc, char* argv[] )
 	/* cleanup SDL */
 	SDL_Quit();
 
+<<<<<<< HEAD
 	delete timer;
 
+=======
+>>>>>>> 9a289092e58439612a755c1c6e6377699ab95fa4
 	return 0;
 }
