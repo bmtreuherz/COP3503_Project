@@ -1,0 +1,52 @@
+COP3503 Project
+
+Program Classes:
+Players
+Goals
+Map
+Ball
+UI
+Sprite
+
+Sprite:
+-Pos(x,y)
+-Surface
+-Default Constructor
+-Draw()
+-Collide()
+
+Players extends Sprite:
+-Speed
+-team
+-posession
+-move()
+-throwBall()
+-captureBall()
+
+Ball extend Sprite:
+-speed 
+-move()
+
+Goal extends Sprite:
+-team
+-containBall
+-addPoints()
+
+Boundary extends Sprite:
+-upperB
+-lowerB
+-leftB
+-rightB
+
+Obstacles extends Sprite: 
+-createBarrier()
+-createFriction()
+
+namespace Level:
+-holds all arragnements of goals and obstacles
+
+GameEngine:
+-initializes()
+-mainloop:
+	-UI
+	-Movement

@@ -5,8 +5,15 @@
 //Constructor
 Sprite::Sprite(){
 }
-
+<<<<<<< HEAD
 //Overload this method to create rectagles
+=======
+
+<<<<<<< HEAD
+//Overload this method to create rectagles
+=======
+>>>>>>> 9a289092e58439612a755c1c6e6377699ab95fa4
+>>>>>>> 4246eb03f323f5da4c103d196e69f53bf45dff2b
 SDL_Surface* Sprite::Load(char* File){
 	//Create two temporary pointers to surfaces
 	SDL_Surface* temp = NULL;
