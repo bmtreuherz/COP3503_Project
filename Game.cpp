@@ -3,13 +3,13 @@
 #include <iostream>
 #include "Player.cpp"
 #include "Constants.h"
+#include "Timer.cpp"
 
 /*
 To compile 
 	g++ Game.cpp -w -lSDL -o Game
 	./Game
 */
-
 
 int main( int argc, char* argv[] )
 {
@@ -37,7 +37,9 @@ int main( int argc, char* argv[] )
 	//create player object
 	Player hero(100, 100, Sprite::Load("lib/mario.bmp"));
 
-	
+	//Testing timer
+	Timer* timer = new Timer();
+
 	/* message pump */
 	while (!gameover)
 	{
@@ -57,6 +59,7 @@ int main( int argc, char* argv[] )
 						case SDLK_q:
 							gameover = 1;
 							break;
+
 						case SDLK_UP:
 							hero.moveUp(true);
 							break;
@@ -93,9 +96,9 @@ int main( int argc, char* argv[] )
 		SDL_BlitSurface(bg, NULL, screen, NULL);
 
 		//Draw the sprite and update his position
-		hero.move();
+
+		hero.move(timer->getDT());
 		Sprite::Draw(screen, hero.getSurface(), hero.getX(),hero.getY());
-;
 
 		/* update the screen */
 		SDL_UpdateRect(screen, 0, 0, 0, 0);
@@ -106,6 +109,9 @@ int main( int argc, char* argv[] )
 
 	/* cleanup SDL */
 	SDL_Quit();
+
+
+	delete timer;
 
 	return 0;
 }

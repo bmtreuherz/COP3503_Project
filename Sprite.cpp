@@ -6,6 +6,7 @@
 Sprite::Sprite(){
 }
 
+//Overload this method to create rectagles
 SDL_Surface* Sprite::Load(char* File){
 	//Create two temporary pointers to surfaces
 	SDL_Surface* temp = NULL;

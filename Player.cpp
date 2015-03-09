@@ -1,11 +1,13 @@
 #include <SDL/SDL.h>
 #include "Player.h"
+#include "Constants.h"
 
 //Constructor
 Player::Player(int x, int y, SDL_Surface* surface){
 	//Set  values for x,y and set default movement to not move
 	this->x = x;
-	this ->y =y;
+	this->y =y;
+
 
 	mUp=false;
 	mDown=false;
@@ -47,18 +49,19 @@ void Player::moveRight(bool m){
 }
 
 //Once per loop this is called to move in the directions it's supposed to
-void Player::move(){
+
+void Player::move(float dt){
+
+	if(mDown){
+		this->y+= Constants::SPEED_Y * dt;
+	}
+	else if(mUp){
+		this->y-=Constants::SPEED_Y * dt;
+	}
 	if(mRight){
-		this->x+=1;
+		this -> x += Constants::SPEED_X * dt;
 	}
 	else if(mLeft){
-		this->x-=1;
-	}
-	if(mUp){
-		this->y-=1;
-	}
-	else if(mDown){
-		this->y+=1;
-
+		this->x-= Constants::SPEED_X * dt;
 	}
 }
