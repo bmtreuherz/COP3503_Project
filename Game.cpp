@@ -1,5 +1,5 @@
 #include <SDL/SDL.h>
-#include "Sprite.cpp"
+#include "Sprite.h"
 #include <iostream>
 #include "Player.cpp"
 #include "Constants.h"
@@ -35,7 +35,14 @@ int main( int argc, char* argv[] )
 	int gameover = 0;
 
 	//create player object
-	Player hero(100, 100, Sprite::Load("lib/mario.bmp"));
+	Player hero(100, 1, 50, 50);
+	hero.Load("lib/green.bmp");
+
+	//create object for collision testing
+	Sprite b(50, 50);
+	b.setX(50);
+	b.setY(50);
+	b.Load("lib/green.bmp");
 
 	//Testing timer
 	Timer* timer = new Timer();
@@ -90,7 +97,9 @@ int main( int argc, char* argv[] )
 							break;	
 					}
 			}
+					
 		}
+
 
 		/* draw the background */
 		SDL_BlitSurface(bg, NULL, screen, NULL);
@@ -98,10 +107,20 @@ int main( int argc, char* argv[] )
 		//Draw the sprite and update his position
 
 		hero.move(timer->getDT());
-		Sprite::Draw(screen, hero.getSurface(), hero.getX(),hero.getY());
+		hero.Draw(screen, hero, hero.getX(),hero.getY());
+		b.Draw(screen, b, b.getX(), b.getY());
 
 		/* update the screen */
 		SDL_UpdateRect(screen, 0, 0, 0, 0);
+
+		//collision
+		//collision detection
+		if(hero.checkCollision(hero, b)){
+			std::cout<<"collided!"<<std::endl;
+		}
+		else{
+			std::cout<<"Not"<<std::endl;
+		}
 	}
 
 	/* free the background surface */

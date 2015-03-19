@@ -1,35 +1,63 @@
 #include <SDL/SDL.h>
+#include "Sprite.h"
 
-class Player{
-private:
-	int x;
-	int y;
-	SDL_Surface* surface;
+class Player : public Sprite{
+	double speedX;
+	double speedY;
+	bool hasBall;
+	bool team;
+
+	//Remove these eventually (maybe)
 	bool mUp, mDown, mLeft, mRight;
-	//TODO: add more stuff like health, lifes, whatever
+
 
 public:
-	Player(int x, int y, SDL_Surface* surface);
+	Player(double speed, bool team, int width, int height) : Sprite(width, height){
+		//Set  values for x,y and set default movement to not move
+		this->speed = speed;
+		this->team = team;
 
-	int getX();
-
-	int getY();
-
-	SDL_Surface* getSurface();
-
-
-	//implement this with speed and framerate
-	void moveUp(bool m);
-
-	void moveDown(bool m);
-
-	void moveLeft(bool m);
-
-	void moveRight(bool m);
+		mUp=false;
+		mDown=false;
+		mLeft=false;
+		mRight=false;
+	}
 
 
-	void move(float dt);
+	//Change boolean values of whether or not to move in that direction based on key input
+	void moveUp(bool m){
+		mUp = m;
+	}
 
-	//TODO: add more functionality
+	void moveDown(bool m){
+		mDown = m;
+	}
+
+	void moveLeft(bool m){
+		mLeft = m;
+	}
+
+	void moveRight(bool m){
+		mRight =m;
+	}
+
+	//Once per loop this is called to move in the directions it's supposed to
+
+	void move(float dt){
+
+		if(mDown){
+			this->y+= Constants::SPEED_Y * dt;
+		}
+		else if(mUp){
+			this->y-=Constants::SPEED_Y * dt;
+		}
+		if(mRight){
+			this -> x += Constants::SPEED_X * dt;
+		}
+		else if(mLeft){
+			this->x-= Constants::SPEED_X * dt;
+		}
+	}
+
 
 };
