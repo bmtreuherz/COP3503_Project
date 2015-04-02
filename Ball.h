@@ -6,12 +6,14 @@
 #define BALL_H
 
 class Ball : public Sprite{
-	double speed;
+	float speedX;
+	float speedY;
 	//Player* captor;
 
 public:
-	Ball(double speed, int width, int height) : Sprite(width, height){
-		this->speed = speed;
+	Ball(float speed, int width, int height) : Sprite(width, height){
+		this->speedX = speed;
+		this->speedY = speed;
 		//captor = NULL;
 
 	}
@@ -19,7 +21,7 @@ public:
 		//delete[] captor;
 	}
 
-	void move();
+	void move(double dt);
 	//void getcaptures(Player capture);
 	void getshot(double theta);
 };

@@ -6,7 +6,6 @@
 
 class Map : public Sprite{
 private:
-
 	SDL_Surface* background;
 	Goal* goals;
 

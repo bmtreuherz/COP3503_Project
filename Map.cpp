@@ -18,12 +18,12 @@ SDL_Surface* Map::updateDisplay(Player players[], Ball ball){
 	}
 */
 	//Display the ball
-	this->Draw(this->surface, ball, ball.getX(), ball.getY());
+	
 	//Display all the players
-
 	for(int i=0; i < 4; i++){
 		this->Draw(this->surface, players[i], players[i].getX(), players[i].getY());
 	}
+	this->Draw(this->surface, ball, ball.getX(), ball.getY());
 
 	return this->surface;	
 }

@@ -21,15 +21,13 @@ public:
 		this->team = team;
 		this->hasBall = false;
 
-		moveUp=false;
-		moveDown=false;
-		moveLeft=false;
-		moveRight=false;
+		moveX=0;
+		moveY=0;
 	}
 
 	//MAKE THESE PRIVATE AFTER TESTING
 
-	bool moveUp, moveDown, moveLeft, moveRight;
+	double moveX, moveY;
 	/*
 	void shootBall(Ball b);
 

@@ -17,6 +17,7 @@ void Controller::loadController(SDL_Joystick* stick){
 
 //takes in the event if ths is the joystick that moved
 void Controller::handleEvent(SDL_Event &event){
+	/*
 	//If the x axis changes
 
 	if(event.jaxis.axis==0){
@@ -55,6 +56,6 @@ void Controller::handleEvent(SDL_Event &event){
 		}
 
 	}
-
+	*/
 	//handle button pressing later
 }
