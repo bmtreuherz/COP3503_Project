@@ -11,8 +11,7 @@ class Player : public Sprite{
 	bool hasBall;
 	bool team;
 
-	//Remove these eventually (maybe)
-	bool mUp, mDown, mLeft, mRight;
+
 
 
 public:
@@ -22,24 +21,21 @@ public:
 		this->team = team;
 		this->hasBall = false;
 
-		mUp=false;
-		mDown=false;
-		mLeft=false;
-		mRight=false;
+		moveUp=false;
+		moveDown=false;
+		moveLeft=false;
+		moveRight=false;
 	}
+
+	//MAKE THESE PRIVATE AFTER TESTING
+
+	bool moveUp, moveDown, moveLeft, moveRight;
 	/*
 	void shootBall(Ball b);
 
 	void captureBall();
 	*/
 
-	//Change the movement a lot
-	//Change boolean values of whether or not to move in that direction based on key input
-	void moveUp(bool m);
-
-	void moveDown(bool m);
-	void moveLeft(bool m);
-	void moveRight(bool m);
 	//Once per loop this is called to move in the directions it's supposed to
 	void move(float dt);
 };

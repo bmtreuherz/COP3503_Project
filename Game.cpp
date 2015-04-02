@@ -7,6 +7,7 @@
 #include "Ball.h"
 #include "Goal.h"
 #include "Map.h"
+#include "Controller.h"
 
 /*
 To compile 
@@ -33,7 +34,7 @@ To compile
 int main( int argc, char* argv[] )
 {
 	/* initialize SDL */
-	SDL_Init(SDL_INIT_VIDEO);
+	SDL_Init(SDL_INIT_EVERYTHING);
 
 	/* set the title bar */
 	SDL_WM_SetCaption("Game", "Game");
@@ -53,7 +54,7 @@ int main( int argc, char* argv[] )
 	SDL_Event event;
 	int gameover = 0;
 
-	//Create Players
+
 	//create Players
 	Player P1(100, 1, 50, 50);
 	P1.Load("lib/green.bmp");
@@ -78,7 +79,21 @@ int main( int argc, char* argv[] )
 	P4.setY(250);
 
 	Player players[4] = {P1, P2, P3, P4};
-	std::cout<< (sizeof(players)/sizeof(*players)) <<std::endl;
+
+	//Load Joysticks
+	int numJoy = SDL_NumJoysticks();
+	Controller C1(&players[0]);
+	Controller C2(&players[1]);
+	Controller C3(&players[2]);
+	Controller C4(&players[3]);
+
+	C1.loadController(SDL_JoystickOpen(0));
+	C2.loadController(SDL_JoystickOpen(1));
+	C3.loadController(SDL_JoystickOpen(2));
+	C4.loadController(SDL_JoystickOpen(3));	
+
+	Controller controllers[4] = {C1, C2, C3, C4};
+
 
 	//create ball
 	Ball ball(100, 50, 50);
@@ -108,10 +123,12 @@ int main( int argc, char* argv[] )
 	*/
 	//Testing timer
 	Timer* timer = new Timer();
+	float dt=0;
 
 	/* message pump */
 	while (!gameover)
-	{
+	{	
+		
 		/* look for an event */
 		if (SDL_PollEvent(&event)) {
 			/* an event was found */
@@ -121,53 +138,45 @@ int main( int argc, char* argv[] )
 					gameover = 1;
 					break;
 
+				//joystick movement
+				case SDL_JOYAXISMOTION:
+					switch (event.jaxis.which){
+						case 0:
+							C1.handleEvent(event);
+							break;
+						case 1:
+							C2.handleEvent(event);
+							break;
+						case 2:
+							C3.handleEvent(event);
+							break;
+						case 3:
+							C4.handleEvent(event);
+							break;
+					}	
 
 				/* handle the keyboard */
-				/*
+				
 				case SDL_KEYDOWN:
 					switch (event.key.keysym.sym) {
 						case SDLK_ESCAPE:
 						case SDLK_q:
 							gameover = 1;
 							break;
-
-						case SDLK_UP:
-							hero.moveUp(true);
-							break;
-						case SDLK_DOWN:
-							hero.moveDown(true);
-							break;
-						case SDLK_RIGHT:
-							hero.moveRight(true);
-							break;
-						case SDLK_LEFT:
-							hero.moveLeft(true);
-							break;	
 					}
-					break;
-				case SDL_KEYUP:
-					switch (event.key.keysym.sym){
-						case SDLK_UP:
-							hero.moveUp(false);
-							break;
-						case SDLK_DOWN:
-							hero.moveDown(false);
-							break;
-						case SDLK_RIGHT:
-							hero.moveRight(false);
-							break;
-						case SDLK_LEFT:
-							hero.moveLeft(false);
-							break;	
-					}
-				*/
 			}
 					
 		}
 
+		//fix this to not be hard coded
+		dt= timer->getDT();
+		for(int i=0; i<4; i++){
+			players[i].move(dt);
+			
+		}
+
 		/* draw the background */
 		bg=map.updateDisplay(players, ball);
-
 
 
 		SDL_BlitSurface(bg, NULL, screen, NULL);

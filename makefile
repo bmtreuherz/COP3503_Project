@@ -1,7 +1,7 @@
 all: Project
 	
-Project: Sprite.o Player.o Ball.o Goal.o Map.o Game.o
-	g++ Game.cpp Player.cpp Sprite.cpp Ball.cpp Goal.cpp Map.cpp -w -lSDL -o Game
+Project: Sprite.o Player.o Ball.o Goal.o Map.o Controller.o Game.o 
+	g++ Game.cpp Player.cpp Sprite.cpp Ball.cpp Goal.cpp Map.cpp Controller.cpp -w -lSDL -o Game
 Sprite.o: Sprite.cpp
 	g++ -c Sprite.cpp -w -lSDL
 
@@ -16,6 +16,9 @@ Goal.o: Goal.cpp
 
 Map.o: Map.cpp
 	g++ -c Map.cpp -w -lSDL
+
+Controller.o: Controller.cpp
+	g++ -c Controller.cpp -w -lSDL
 
 clean:
 	rm -rf *o *gch *stackdump Project

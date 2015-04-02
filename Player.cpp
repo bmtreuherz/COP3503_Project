@@ -2,6 +2,7 @@
 #include "Sprite.h"
 #include "Constants.h"
 #include "Player.h"
+#include <iostream>
 
 
 
@@ -18,35 +19,49 @@ void Player::captureBall(){
 
 //Change the movement a lot
 //Change boolean values of whether or not to move in that direction based on key input
-void Player::moveUp(bool m){
-	mUp = m;
-}
-
-void Player::moveDown(bool m){
-	mDown = m;
-}
-
-void Player::moveLeft(bool m){
-	mLeft = m;
-}
-
-void Player::moveRight(bool m){
-	mRight =m;
-}
 
 //Once per loop this is called to move in the directions it's supposed to
 void Player::move(float dt){
+	std::cout<<"X: "<<this->x<<" Y: " << this->y << std::endl;
 
-	if(mDown){
-		this->y+= Constants::SPEED_Y * dt;
+	if(this->y >= Constants::SCREEN_HEIGHT - this->height){
+		this->y--;
 	}
-	else if(mUp){
-		this->y-=Constants::SPEED_Y * dt;
+	if(this->x >= Constants::SCREEN_WIDTH - this->width){
+		this->x++;
 	}
-	if(mRight){
-		this -> x += Constants::SPEED_X * dt;
+
+
+	if(moveDown){
+		if(this->y >= Constants::SCREEN_HEIGHT - this->height){
+			this->y = Constants::SCREEN_HEIGHT - this->height*2;
+		}
+		else{
+			this->y+= Constants::SPEED_Y * dt;
+		}
 	}
-	else if(mLeft){
-		this->x-= Constants::SPEED_X * dt;
+	else if(moveUp){
+		if(this->y <= 0){
+			this->y = 0;
+		}
+		else{
+			this->y-=Constants::SPEED_Y * dt;
+		}
+	}
+	if(moveRight){
+		if(this->x >= Constants::SCREEN_WIDTH - this->width){
+			this->x = Constants::SCREEN_WIDTH - this->width*2;
+		}
+		else{
+			this -> x += Constants::SPEED_X * dt;
+		}
+	}
+	else if(moveLeft){
+		if(this->x <= 0){
+			this->x = 0;
+		}
+		else{
+			this->x-= Constants::SPEED_X * dt;
+		}
 	}
 }
