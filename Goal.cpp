@@ -1,35 +1,15 @@
+#include <SDL/SDL.h>
+#include "Sprite.h"
+#include "Goal.h"
 
-
-class Goal: public Sprite{
-protected:
-	bool team;
-	int score;
-	Sprite fillGoal;
-public:
-	Goals(bool team, int width, int height) : Sprite(width, height){
-		this->team = team;
-		if(team){
-			Sprite s(width/10, height/10);
-			s.load("lib/lightGreen");
-			fillGoal = s;
+void Goal::incrementScore(bool hasBall){
+	if(hasBall){
+		score++;
+		if(score % 10 == 1){
+			Sprite::Draw(this->surface, fillGoal->getSurface(), 0, this->height/10 * (score / 10));
 		}
 		else{
-			Sprite s(width/10, height/10);
-			s.load("lib/lightPink");
-			fillGoal = s
+			Sprite::Draw(this->surface, fillGoal->getSurface(), this->width/10 * (score % 10), this->height * (score / 10));
 		}
-
-	}
-	void incrementScore(bool hasBall){
-		if(hasBall && team == true){
-			score++;
-			if(score % 10 == 1){
-				Sprite::Draw(Goal.getSurface, fillGoal, 0, fillGoal.height * (score / 10));
-			}
-			else{
-				Sprite::Draw(Goal.getSurface, fillGoal, fillGoal.width * (score % 10), fillGoal.height * (score / 10))
-			}
-		}
-	}
-
-};
+	}	
+}

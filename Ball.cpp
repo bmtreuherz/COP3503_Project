@@ -1,22 +1,16 @@
-#include "SDL/SDL.h"
-#include "Sprite.cpp"
+#include <SDL/SDL.h>
+#include "Ball.h"
+#include "Sprite.h"
 
-class Ball : public Sprite{
-	double speed;
-	Player captor;
+void Ball::move(){
+	//todo: implement
+}
+/*
+void Ball::getcaptures(Player capture){
 
-public:
-	Ball(double speed, int width, int height) : Sprite(width, height){
-		this->speed = speed;
-	}
-	void move(){
-		//TODO: implement
-	}
-	void getCaptures(Player capture){
+}
+*/
 
-	}
-
-	void getShot(double theta){
-		//TODO: implement
-	}
-};
+void Ball::getshot(double theta){
+	//todo: implement
+}
