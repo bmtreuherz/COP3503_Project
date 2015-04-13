@@ -13,8 +13,6 @@ void Goal::incrementScore(){
         fillGoal->setY(this->getY());
     }
 
-    std::cout<<"GOAL "<<this->team <<"SCORE: "<<score<<std::endl;
-
     if(score % 10 == 0){
         this->fillGoal->setX(this->fillGoal->getX() + this->fillGoal->getWidth());
     }

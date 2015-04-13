@@ -2,7 +2,6 @@
 #include "Sprite.h"
 #include <iostream>
 #include "Player.h"
-#include "Constants.h"
 #include "Timer.h"
 #include "Ball.h"
 #include "Goal.h"
@@ -38,10 +37,16 @@ int main( int argc, char* argv[] )
 	/* set the title bar */
 	SDL_WM_SetCaption("Game", "Game");
 
+	//Define necessary constants 
+	const SDL_VideoInfo* info = SDL_GetVideoInfo();   //<-- calls SDL_GetVideoInfo();   
+	int screenWidth = info->current_w;
+	int screenHeight = info->current_h;
+	float speed = 0.001 * screenWidth;
+	double speedBall = 0.01 * screenWidth;
+
+
 	/* create window */
-	SDL_Surface* screen = SDL_SetVideoMode(Constants::SCREEN_WIDTH, Constants::SCREEN_HEIGHT, 0, 0);
-	//SDL_Surface* screen = SDL_SetVideoMode(SDL_FULLSCREEN);
-	//SDL_Surface* screen = SDL_SetVideoMode(Constants::SCREEN_WIDTH, Constants::SCREEN_HEIGHT, 0, SDL_FULLSCREEN);
+	SDL_Surface* screen = SDL_SetVideoMode(screenWidth, screenHeight, 0, SDL_FULLSCREEN);
 
 
 	/* load bitmap to temp surface */
@@ -54,13 +59,13 @@ int main( int argc, char* argv[] )
 	SDL_FreeSurface(temp);
 
 	//create Players
-	Player P1(Constants::SPEED, 1, 50, 50);
+	Player P1(speed, 1, 50, 50);
 	P1.Load("lib/green.bmp");
-	Player P2(Constants::SPEED , 1, 50, 50);
+	Player P2(speed , 1, 50, 50);
 	P2.Load("lib/green.bmp");
-	Player P3(Constants::SPEED, 0, 50, 50);
+	Player P3(speed, 0, 50, 50);
 	P3.Load("lib/red.bmp");
-	Player P4(Constants::SPEED, 0, 50, 50);
+	Player P4(speed, 0, 50, 50);
 	P4.Load("lib/red.bmp");
 
 	//Remove later
@@ -88,16 +93,18 @@ int main( int argc, char* argv[] )
 
 
 	//create ball
-	Ball ball(Constants::SPEED_BALL, 15, 15);
+	Ball ball(speedBall, 15, 15);
 	ball.Load("lib/cyan.bmp");	
+	ball.setX(screenWidth/2);
+	ball.setY(screenHeight/2);
 
 	//create goals
-	Goal goalFalse(0, 100, Constants::SCREEN_HEIGHT/2, "lib/red.bmp");
-	Goal goalTrue(1, 100, Constants::SCREEN_HEIGHT/2, "lib/red.bmp");
+	Goal goalFalse(0, 100, screenHeight/2, "lib/red.bmp");
+	Goal goalTrue(1, 100, screenHeight/2, "lib/red.bmp");
 	goalFalse.setX(0);
-	goalFalse.setY(Constants::SCREEN_HEIGHT/4);
-	goalTrue.setX(Constants::SCREEN_WIDTH-goalTrue.getWidth());
-	goalTrue.setY(Constants::SCREEN_HEIGHT/4);
+	goalFalse.setY(screenHeight/4);
+	goalTrue.setX(screenWidth-goalTrue.getWidth());
+	goalTrue.setY(screenHeight/4);
 	goalTrue.Load("lib/cyan.bmp");
 	goalFalse.Load("lib/cyan.bmp");
 	Goal goals[] = {goalFalse, goalTrue};
@@ -105,7 +112,7 @@ int main( int argc, char* argv[] )
 
 
 	//create map
-	Map map(Constants::SCREEN_WIDTH, Constants::SCREEN_HEIGHT, "lib/background.bmp", goals);
+	Map map(screenWidth, screenHeight, "lib/background.bmp", goals);
 
 	//Create timer
 	///Ball timer is necessary to prevent ball from constantly switchng back and forth
@@ -250,17 +257,15 @@ int main( int argc, char* argv[] )
 
 					}
 					//ball stealing
-					if(side!=-1 && (ballDT==0 || ballDT > 15)){
+					if(side!=-1 && (ballDT==0 || ballDT > 20)){
 						if(players[i].getBall()){
 							
-							std::cout<<"PLAYER "<<j<<"TAKE THE BALL FROM "<< i<< std::endl;
 							players[i].captureBall(false);
 							players[j].captureBall(true);
 							ball.getCaptured(&players[j]);
 						}
 						else if(players[j].getBall()){
 					
-							std::cout<<"PLAYER "<<i<<"TAKE THE BALL FROM " << j << std::endl;
 
 							players[j].captureBall(false);
 							players[i].captureBall(true);
@@ -277,14 +282,14 @@ int main( int argc, char* argv[] )
 			if(players[i].getX()<0){
 				players[i].setX(0);
 			}
-			else if(players[i].getX()>Constants::SCREEN_WIDTH-players[i].getWidth()){
-				players[i].setX(Constants::SCREEN_WIDTH-players[i].getWidth());
+			else if(players[i].getX()>screenWidth-players[i].getWidth()){
+				players[i].setX(screenWidth-players[i].getWidth());
 			}
 			if(players[i].getY()<0){
 				players[i].setY(0);
 			}
-			else if(players[i].getY()>Constants::SCREEN_HEIGHT-players[i].getHeight()){
-				players[i].setY(Constants::SCREEN_HEIGHT-players[i].getHeight());
+			else if(players[i].getY()>screenHeight-players[i].getHeight()){
+				players[i].setY(screenHeight-players[i].getHeight());
 			}
 		}
 

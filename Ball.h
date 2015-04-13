@@ -1,7 +1,7 @@
 #include <SDL/SDL.h>
 #include "Sprite.h"
 #include "Player.h"
-#include "Constants.h"
+
 
 #ifndef BALL_H
 #define BALL_H
@@ -15,8 +15,6 @@ public:
 	Ball(double speed, int width, int height) : Sprite(width, height){
 		this->speedX = speed;
 		this->speedY = speed;
-		this->x = Constants::SCREEN_WIDTH/2;
-		this->y = Constants::SCREEN_HEIGHT/2;
 		captor = NULL;
 
 	}
