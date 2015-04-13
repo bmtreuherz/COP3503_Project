@@ -28,6 +28,7 @@ public:
 	SDL_Surface* returnASurface(char* File);
 	void Draw(SDL_Surface* dest, Sprite s, int x,int y );
 	void Draw(SDL_Surface* dest, SDL_Surface* src, int x,int y );
-	bool checkCollision(Sprite s1, Sprite s2);
+	int checkCollision(Sprite other);
+
 };
 #endif

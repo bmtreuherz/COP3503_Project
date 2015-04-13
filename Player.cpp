@@ -58,3 +58,10 @@ void Player::move(float dt){
 	}
 
 }
+void Player::captureBall(bool cap){
+	hasBall = cap;
+}
+
+bool Player::getBall(){
+	return hasBall;
+}

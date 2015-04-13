@@ -30,10 +30,10 @@ public:
 	double moveX, moveY;
 	/*
 	void shootBall(Ball b);
-
-	void captureBall();
-	*/
-
+*/
+	void captureBall(bool cap);
+	
+	bool getBall();
 	//Once per loop this is called to move in the directions it's supposed to
 	void move(float dt);
 };

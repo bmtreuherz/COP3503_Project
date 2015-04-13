@@ -6,17 +6,20 @@
 #include "Ball.h"
 #include <iostream>
 
-SDL_Surface* Map::updateDisplay(Player players[], Ball ball){
+SDL_Surface* Map::updateDisplay(Player players[], Ball ball, Goal goals[]){
 	//update screen
 	
 	//blank slate
 	this->Draw(surface, background, 0,0);
-/*
+
+	bool hasBall;
 	//Display all goals
-	for(int i = 0; i < (sizeof(goals)/sizeof(*goals)); i++){
+	for(int i = 0; i < 2; i++){
 		this->Draw(this->surface, goals[i], goals[i].getX(), goals[i].getY());
+		
 	}
-*/
+
+
 	//Display the ball
 	
 	//Display all the players
@@ -27,4 +30,3 @@ SDL_Surface* Map::updateDisplay(Player players[], Ball ball){
 
 	return this->surface;	
 }
-

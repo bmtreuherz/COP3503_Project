@@ -40,6 +40,9 @@ int main( int argc, char* argv[] )
 
 	/* create window */
 	SDL_Surface* screen = SDL_SetVideoMode(Constants::SCREEN_WIDTH, Constants::SCREEN_HEIGHT, 0, 0);
+	//SDL_Surface* screen = SDL_SetVideoMode(SDL_FULLSCREEN);
+	//SDL_Surface* screen = SDL_SetVideoMode(Constants::SCREEN_WIDTH, Constants::SCREEN_HEIGHT, 0, SDL_FULLSCREEN);
+
 
 	/* load bitmap to temp surface */
 	SDL_Surface* temp = SDL_LoadBMP("lib/background.bmp");
@@ -85,21 +88,30 @@ int main( int argc, char* argv[] )
 
 
 	//create ball
-	Ball ball(Constants::SPEED, 15, 15);
-	ball.setX(300);
-	ball.setY(300);
+	Ball ball(Constants::SPEED_BALL, 15, 15);
 	ball.Load("lib/cyan.bmp");	
 
 	//create goals
-	Goal goal(1, 100, 100);
-	Goal goals[] = {goal};
+	Goal goalFalse(0, 100, Constants::SCREEN_HEIGHT/2, "lib/red.bmp");
+	Goal goalTrue(1, 100, Constants::SCREEN_HEIGHT/2, "lib/red.bmp");
+	goalFalse.setX(0);
+	goalFalse.setY(Constants::SCREEN_HEIGHT/4);
+	goalTrue.setX(Constants::SCREEN_WIDTH-goalTrue.getWidth());
+	goalTrue.setY(Constants::SCREEN_HEIGHT/4);
+	goalTrue.Load("lib/cyan.bmp");
+	goalFalse.Load("lib/cyan.bmp");
+	Goal goals[] = {goalFalse, goalTrue};
+
+
 
 	//create map
 	Map map(Constants::SCREEN_WIDTH, Constants::SCREEN_HEIGHT, "lib/background.bmp", goals);
 
-
 	//Create timer
+	///Ball timer is necessary to prevent ball from constantly switchng back and forth
 	Timer* timer = new Timer();
+	Timer* ballTimer = new Timer();
+	float ballDT=0;
 	float dt=0;
 
 	SDL_Event event;
@@ -176,49 +188,135 @@ int main( int argc, char* argv[] )
 			}
 					
 		}
-		std::cout<<"X is: " << ball.getX() << "Y is: " << ball.getY()<<std::endl;
-		//fix this to not be hard coded
 
+		//player and ball movement
 		dt= timer->getDT();
-
 		
-
 		for(int i=0; i<4; i++){
 			players[i].move(dt);
-			
+
+			if(ball.getCaptor()==NULL){
+				if(ball.checkCollision(players[i]) !=-1){
+					ball.getCaptured(&players[i]);
+					players[i].captureBall(true);
+				}	
+			}
 		}
+
 		ball.move(dt);
+
+		//check to see if the ball collides with a player
+
+
+		//testing new collission detectoin
+		int dif;
+		for(int i=0; i<3; i++){
+			for(int j=1; j<4; j++){
+				if(i!=j){
+					int side = players[i].checkCollision(players[j]);
+					switch (side){
+						case 0:
+							ballDT= ballTimer->getDT();
+							dif = players[i].getHeight() - (players[i].getY()-players[j].getY());
+							players[i].setY(players[i].getY()+dif/2);
+							players[j].setY(players[j].getY()-dif/2);
+
+							//players[i].setY(players[j].getY()+players[j].getHeight());
+							break;
+						case 1:
+							ballDT= ballTimer->getDT();
+							dif = players[i].getWidth() - (players[j].getX()-players[i].getX());
+							players[i].setX(players[i].getX()-dif/2);
+							players[j].setX(players[j].getX()+dif/2);
+
+							//players[i].setX(players[j].getX()-players[j].getWidth());
+							break;
+						case 2:	
+							ballDT= ballTimer->getDT();
+							dif = players[i].getHeight() - (players[j].getY()-players[i].getY());
+							players[i].setY(players[i].getY()-dif/2);
+							players[j].setY(players[j].getY()+dif/2);
+							
+							//players[i].setY(players[j].getY()-players[j].getHeight());
+							break;
+						case 3:
+							ballDT= ballTimer->getDT();
+							dif = players[i].getWidth() - (players[i].getX()-players[j].getX());
+							players[i].setX(players[i].getX()+dif/2);
+							players[j].setX(players[j].getX()-dif/2);
+
+							//players[i].setX(players[j].getX()+players[j].getWidth());
+							break;
+
+					}
+					//ball stealing
+					if(side!=-1 && (ballDT==0 || ballDT > 15)){
+						if(players[i].getBall()){
+							
+							std::cout<<"PLAYER "<<j<<"TAKE THE BALL FROM "<< i<< std::endl;
+							players[i].captureBall(false);
+							players[j].captureBall(true);
+							ball.getCaptured(&players[j]);
+						}
+						else if(players[j].getBall()){
+					
+							std::cout<<"PLAYER "<<i<<"TAKE THE BALL FROM " << j << std::endl;
+
+							players[j].captureBall(false);
+							players[i].captureBall(true);
+							ball.getCaptured(&players[i]);
+						}
+					}
+				}
+			}
+		}
+
+
+		//make sure that the players cant go off the map
+		for(int i=0; i<4; i++){
+			if(players[i].getX()<0){
+				players[i].setX(0);
+			}
+			else if(players[i].getX()>Constants::SCREEN_WIDTH-players[i].getWidth()){
+				players[i].setX(Constants::SCREEN_WIDTH-players[i].getWidth());
+			}
+			if(players[i].getY()<0){
+				players[i].setY(0);
+			}
+			else if(players[i].getY()>Constants::SCREEN_HEIGHT-players[i].getHeight()){
+				players[i].setY(Constants::SCREEN_HEIGHT-players[i].getHeight());
+			}
+		}
+
+		//increment score
+		
+		for(int i=0; i<2; i++){
+			if(ball.checkCollision(goals[i]) !=-1){
+				goals[i].incrementScore();
+				if(goals[i].getScore() >=1000){
+					std::cout<<"Team "<<i<<" Wins!"<< std::endl;
+					gameover =1;
+
+				}
+			}
+		}
+		
+
+
 		/* draw the background */
-		bg=map.updateDisplay(players, ball);
+		bg=map.updateDisplay(players, ball, goals);
 
 
 		SDL_BlitSurface(bg, NULL, screen, NULL);
-
-		
-		/*
-		//Draw the sprite and update his position
-		ball.Draw(screen, ball, ball.getX(), ball.getY());
-		hero.move(timer->getDT());
-		hero.Draw(screen, hero, hero.getX(),hero.getY());
-		b.Draw(screen, b, b.getX(), b.getY());
-		*/
 
 
 
 		/* update the screen */
 		SDL_UpdateRect(screen, 0, 0, 0, 0);
 
+		
 
-		/*
-		//collision
-		//collision detection
-		if(hero.checkCollision(hero, b)){
-			std::cout<<"collided!"<<std::endl;
-		}
-		else{
-			std::cout<<"Not"<<std::endl;
-		}
-		*/
+
 	}
 
 	/* free the background surface */

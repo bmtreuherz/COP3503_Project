@@ -19,5 +19,5 @@ public:
 		this->goals = goals;
 	}
 
-	SDL_Surface* updateDisplay(Player players[], Ball ball);
+	SDL_Surface* updateDisplay(Player players[], Ball ball, Goal goals[]);
 };

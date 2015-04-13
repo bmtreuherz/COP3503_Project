@@ -1,20 +1,23 @@
 #include <SDL/SDL.h>
 #include "Sprite.h"
 #include "Player.h"
+#include "Constants.h"
 
 #ifndef BALL_H
 #define BALL_H
 
 class Ball : public Sprite{
-	float speedX;
-	float speedY;
-	//Player* captor;
+	double speedX;
+	double speedY;
+	Player* captor;
 
 public:
-	Ball(float speed, int width, int height) : Sprite(width, height){
+	Ball(double speed, int width, int height) : Sprite(width, height){
 		this->speedX = speed;
 		this->speedY = speed;
-		//captor = NULL;
+		this->x = Constants::SCREEN_WIDTH/2;
+		this->y = Constants::SCREEN_HEIGHT/2;
+		captor = NULL;
 
 	}
 	~Ball(){
@@ -22,7 +25,8 @@ public:
 	}
 
 	void move(double dt);
-	//void getcaptures(Player capture);
+	void getCaptured(Player* captor);
+	Player* getCaptor();
 	void getshot(double theta);
 };
 #endif

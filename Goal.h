@@ -9,21 +9,22 @@ protected:
 	bool team;
 	int score;
 	Sprite* fillGoal;
+
 public:
-	Goal(bool team, int width, int height) : Sprite(width, height){
+	Goal(bool team, int width, int height, char* File) : Sprite(width, height){
+		score = 0;
 		this->team = team;
-		if (team){
-			Sprite s(width / 10, height / 10);
-			s.Load("lib/red.bmp");
-			fillGoal = &s;
-		}
-		else{
-			Sprite s(width / 10, height / 10);
-			s.Load("lib/purple.bmp");
-			fillGoal = &s;
-		}
+		Sprite* temp = new Sprite(width/10, height/10);
+		temp->Load(File);
+		temp->setX(-1);
+		temp->setY(-1);
+		fillGoal = temp;
+
 	}
-	void incrementScore(bool hasBall);
+
+	void incrementScore();
+
+	int getScore();
 
 };
 #endif

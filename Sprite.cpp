@@ -104,36 +104,115 @@ void Sprite::Draw(SDL_Surface* dest, SDL_Surface* src, int x, int y){
    SDL_BlitSurface(src, NULL, dest, &destR);
 }
 
-bool Sprite::checkCollision(Sprite s1, Sprite s2){
+//return -1 if kno collission, 0 for top, 1 for right, 2 for bottom, 3 for left
+int Sprite::checkCollision(Sprite other){
 	//initialize variables for the rectangle
 	int left1, right1, up1, bottom1;
 	int left2, right2, up2, bottom2;
 
 	//Calculate the bounds for the first sprite
-	left1 = s1.x;
-	right1 = s1.x + s1.width;
-	up1 = s1.y;
-	bottom1 = s1.y + s1.height;
+	left1 = this->x;
+	right1 = this->x + this->width;
+	up1 = this->y;
+	bottom1 = this->y + this->height;
 
 	//Calculate the bounds for the second sprite
-	left2 = s2.x;
-	right2 = s2.x + s2.width;
-	up2 = s2.y;
-	bottom2 = s2.y + s2.height;
+	left2 = other.x;
+	right2 = other.x + other.width;
+	up2 = other.y;
+	bottom2 = other.y + other.height;
+
 
 	//determine if any collosions are happending
 	if(left1 >= right2){
-		return false;
+		return -1;
 	}
 	if(right1 <= left2){
-		return false;
+		return -1;
 	}
 	if(up1 >= bottom2){
-		return false;
+		return -1;
 	}
 	if(bottom1 <= up2){
-		return false;
+		return -1;
 	}
-	return true;
-}
 
+	//determine where the collision occured
+
+	//collision with the left side
+	if(left1 > left2){
+		//collision with the bottom
+		if(up1 < up2){
+			//whichever direction has the smallest differece indicates the direction the user was trying to go
+			//user was moving down. 
+			if((bottom1-up2)<(right2-left1)){
+				return 2;
+			}
+			//user was moving left 
+			else{
+				return 3;
+			}
+
+		}
+		//collision with the top or 
+		else if(up1 > up2){
+			//user was moving up
+			if((bottom2-up1)<(right2-left1)){
+				return 0;
+			}
+
+			//user was moving left
+			else{
+				return 3;
+			}
+		}
+		//rare case that it is only a side collision
+		else{
+			return 3;
+		}
+	}
+	//collision with the right side
+	else if(left1 < left2){
+		//collision with the bottom
+		if(up1 < up2){
+
+			//player was moving down
+			if((bottom1-up2)<(right1-left2)){
+				return 2;
+			}
+			//player was moving right
+			else{
+				return 1;
+			}
+		}
+		//collision with the top or 
+		else if(up1 > up2){
+
+			//user was moving up
+			if((bottom2-up1)<(right1-left2)){
+				return 0;
+			}
+
+			//user was moving right 
+			else{
+				return 1;
+			}
+		}
+		//rare case that it is only a side collision
+		else{
+			return 1;
+		}
+	}
+
+	//rare case where the collision occurs only with the top
+	else{
+		//bottom collision
+		if(up1 < up2){
+			return 2;
+		}
+		//top collision
+		else{
+			return 0;
+		}	
+	}
+}
