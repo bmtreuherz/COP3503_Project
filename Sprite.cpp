@@ -81,8 +81,10 @@ void Sprite::Draw(SDL_Surface* dest, Sprite sprite, int x, int y){
    SDL_Surface* src = sprite.getSurface();
    SDL_Rect  destR;
 
+   
    destR.x = sprite.getX();
    destR.y = sprite.getY();
+
 
    SDL_Rect srcR;
 

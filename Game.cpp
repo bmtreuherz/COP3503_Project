@@ -6,6 +6,7 @@
 #include "Ball.h"
 #include "Goal.h"
 #include "Map.h"
+#include <math.h>
 
 /*
 To compile 
@@ -38,12 +39,19 @@ int main( int argc, char* argv[] )
 	SDL_WM_SetCaption("Game", "Game");
 
 	//Define necessary constants 
+	
 	const SDL_VideoInfo* info = SDL_GetVideoInfo();   //<-- calls SDL_GetVideoInfo();   
 	int screenWidth = info->current_w;
 	int screenHeight = info->current_h;
-	float speed = 0.001 * screenWidth;
-	double speedBall = 0.01 * screenWidth;
+	float speed = 0.0005 * screenWidth;
+	double speedBall = 0.005 * screenWidth;
 
+	/*
+	int screenWidth = 1920/2;
+	int screenHeight = 1080/2;
+	/*
+
+	
 
 	/* create window */
 	SDL_Surface* screen = SDL_SetVideoMode(screenWidth, screenHeight, 0, SDL_FULLSCREEN);
@@ -68,7 +76,7 @@ int main( int argc, char* argv[] )
 	Player P4(speed, 0, 50, 50);
 	P4.Load("lib/red.bmp");
 
-	//Remove later
+	//starting points
 	P1.setX(50);
 	P1.setY(50);
 
@@ -84,12 +92,12 @@ int main( int argc, char* argv[] )
 	Player players[4] = {P1, P2, P3, P4};
 
 	//Load Joysticks
-	if(SDL_NumJoysticks >0){
-		SDL_Joystick* C1 = SDL_JoystickOpen(0);
-		SDL_Joystick* C2 = SDL_JoystickOpen(1);
-		SDL_Joystick* C3 = SDL_JoystickOpen(2);
-		SDL_Joystick* C4 = SDL_JoystickOpen(3);
-	}
+	
+	SDL_Joystick* C1 = SDL_JoystickOpen(0);
+	SDL_Joystick* C2 = SDL_JoystickOpen(1);
+	SDL_Joystick* C3 = SDL_JoystickOpen(2);
+	SDL_Joystick* C4 = SDL_JoystickOpen(3);
+	SDL_Joystick* joysticks[] = {C1, C2, C3, C4};
 
 
 	//create ball
@@ -182,6 +190,41 @@ int main( int argc, char* argv[] )
 							players[event.jaxis.which].moveY = 0;
 						}
 					}
+					break;
+
+				case SDL_JOYBUTTONDOWN:
+					std::cout<<event.jbutton.button<<std::endl;
+					//a button pressed
+					if(event.jbutton.button==0){
+						if(players[event.jbutton.which].getBall()){
+							double x = SDL_JoystickGetAxis(joysticks[event.jbutton.which],0);
+							double y = SDL_JoystickGetAxis(joysticks[event.jbutton.which],1);
+							std::cout << x << " " << y << std::endl;
+							double theta = atan(y/x);
+
+							if(x < 0){
+								theta += 3.14;
+							}
+
+							std::cout<<theta<<std::endl;
+
+							ball.getShot(theta);
+							players[event.jbutton.which].captureBall(false);
+						}
+
+
+
+						std::cout<<"a pressed\n";
+
+
+					}			
+					if(event.jbutton.button==9){
+
+						//DO YOUR THING KURT!
+						std::cout<<"start pressed\n";
+					}		
+					//determine which button is which 0:a 9:start
+					break;
 
 				/* handle the keyboard */
 				
@@ -203,14 +246,14 @@ int main( int argc, char* argv[] )
 			players[i].move(dt);
 
 			if(ball.getCaptor()==NULL){
-				if(ball.checkCollision(players[i]) !=-1){
+				if(ball.checkCollision(players[i]) !=-1 && ball.isCapturable()){
 					ball.getCaptured(&players[i]);
 					players[i].captureBall(true);
 				}	
 			}
 		}
 
-		ball.move(dt);
+		ball.move(dt, screenWidth, screenHeight);
 
 		//check to see if the ball collides with a player
 
@@ -318,8 +361,6 @@ int main( int argc, char* argv[] )
 
 		/* update the screen */
 		SDL_UpdateRect(screen, 0, 0, 0, 0);
-
-		
 
 
 	}

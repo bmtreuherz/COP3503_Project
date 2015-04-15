@@ -2,28 +2,36 @@
 #include "Ball.h"
 #include <iostream>
 #include "Sprite.h"
+#include <math.h>
 
-void Ball::move(double dt){
+void Ball::move(double dt, int screenWidth, int screenHeight){
 
 
 
-	if(captor==NULL){	
-	//problems with dt being too large at program start
-		/*
-		if (dt > 10000 || dt < -10000){
-			return;
+	if(captor==NULL){
+
+		count++; 
+
+		this->x += 0.1 * speedX * dt;
+		this->y += 0.1 * speedY * dt;
+
+	
+
+		if((this->x > screenWidth - this->width) || this->x < 0){
+			speedX *=-1;
 		}
-		
-		this->x += speedX * dt;
-		this->y += speedY * dt;
 
-		if(this->x >= Constants::SCREEN_WIDTH - this->width || this-> x <=0){
-			speedX *= -1;
+		if((this->y > screenHeight - this->height) || this->y < 0){
+			speedY *=-1;
 		}
-		if(this->y >= Constants::SCREEN_HEIGHT - this->height || this-> y <=0){
-			speedY *= -1;
+
+		if(count > 20){
+			capturable = true;
 		}
-		*/	
+
+		std::cout<<count<<std::endl;
+
+
 	}
 
 	else{
@@ -38,10 +46,17 @@ void Ball::move(double dt){
 void Ball::getCaptured(Player* captor){
 	this->captor = captor;
 }
+bool Ball::isCapturable(){
+	return capturable;
+}
 
-
-void Ball::getshot(double theta){
-	//todo: implement
+void Ball::getShot(double theta){
+	this->captor = NULL;
+	this->speedX = speedMax * cos(theta);
+	this->speedY = speedMax * sin(theta);
+	this->theta = theta; 
+	capturable = false;
+	count = 0;
 }
 
 Player* Ball::getCaptor(){
