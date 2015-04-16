@@ -76,7 +76,7 @@ SDL_Surface* Sprite::returnASurface(char* File){
 	return optimized;
 }
 
-void Sprite::Draw(SDL_Surface* dest, Sprite sprite, int x, int y){
+void Sprite::Draw(SDL_Surface* dest, Sprite sprite){
 
    SDL_Surface* src = sprite.getSurface();
    SDL_Rect  destR;

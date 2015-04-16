@@ -12,8 +12,8 @@ void Ball::move(double dt, int screenWidth, int screenHeight){
 
 		count++; 
 
-		this->x += 0.1 * speedX * dt;
-		this->y += 0.1 * speedY * dt;
+		this->x += 0.2 * speedX * dt;
+		this->y += 0.2 * speedY * dt;
 
 	
 

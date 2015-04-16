@@ -107,17 +107,15 @@ int main( int argc, char* argv[] )
 	ball.setY(screenHeight/2);
 
 	//create goals
-	Goal goalFalse(0, 100, screenHeight/2, "lib/red.bmp");
-	Goal goalTrue(1, 100, screenHeight/2, "lib/red.bmp");
+	Goal goalFalse(0, 100, screenHeight/2, "lib/lightRed.bmp");
+	Goal goalTrue(1, 100, screenHeight/2, "lib/lightGreen.bmp");
 	goalFalse.setX(0);
 	goalFalse.setY(screenHeight/4);
 	goalTrue.setX(screenWidth-goalTrue.getWidth());
 	goalTrue.setY(screenHeight/4);
-	goalTrue.Load("lib/cyan.bmp");
-	goalFalse.Load("lib/cyan.bmp");
+	goalTrue.Load("lib/darkGreen.bmp");
+	goalFalse.Load("lib/darkRed.bmp");
 	Goal goals[] = {goalFalse, goalTrue};
-
-
 
 	//create map
 	Map map(screenWidth, screenHeight, "lib/background.bmp", goals);
@@ -212,10 +210,7 @@ int main( int argc, char* argv[] )
 							players[event.jbutton.which].captureBall(false);
 						}
 
-
-
 						std::cout<<"a pressed\n";
-
 
 					}			
 					if(event.jbutton.button==9){
@@ -235,8 +230,7 @@ int main( int argc, char* argv[] )
 							gameover = 1;
 							break;
 					}
-			}
-					
+			}		
 		}
 
 		//player and ball movement
@@ -260,7 +254,7 @@ int main( int argc, char* argv[] )
 
 		//testing new collission detectoin
 		int dif;
-		for(int i=0; i<3; i++){
+		for(int i=0; i<3;i++){
 			for(int j=1; j<4; j++){
 				if(i!=j){
 					int side = players[i].checkCollision(players[j]);
@@ -300,7 +294,7 @@ int main( int argc, char* argv[] )
 
 					}
 					//ball stealing
-					if(side!=-1 && (ballDT==0 || ballDT > 20)){
+					if(side!=-1 && (ballDT==0 || ballDT > 0)){
 						if(players[i].getBall()){
 							
 							players[i].captureBall(false);

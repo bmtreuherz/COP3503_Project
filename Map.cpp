@@ -15,7 +15,7 @@ SDL_Surface* Map::updateDisplay(Player players[], Ball ball, Goal goals[]){
 	bool hasBall;
 	//Display all goals
 	for(int i = 0; i < 2; i++){
-		this->Draw(this->surface, goals[i], goals[i].getX(), goals[i].getY());
+		this->Draw(this->surface, goals[i]);
 		
 	}
 
@@ -24,9 +24,9 @@ SDL_Surface* Map::updateDisplay(Player players[], Ball ball, Goal goals[]){
 	
 	//Display all the players
 	for(int i=0; i < 4; i++){
-		this->Draw(this->surface, players[i], players[i].getX(), players[i].getY());
+		this->Draw(this->surface, players[i]);
 	}
-	this->Draw(this->surface, ball, ball.getX(), ball.getY());
+	this->Draw(this->surface, ball);
 
 	return this->surface;	
 }

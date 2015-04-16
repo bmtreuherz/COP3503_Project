@@ -21,7 +21,7 @@ void Goal::incrementScore(){
         this->fillGoal->setY(this->fillGoal->getY() + this->fillGoal->getHeight());
     }
 
-    Draw(this->surface, *this->fillGoal, 0,0);
+    Draw(this->surface, *this->fillGoal);
     
 
 }
