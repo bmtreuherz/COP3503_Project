@@ -9,28 +9,131 @@
 #include "Map.h"
 #include <math.h>
 
-/*
-To compile 
+bool winScreen(int winner, SDL_Surface* bg){
+	//Define necessary constants 
+	const SDL_VideoInfo* info = SDL_GetVideoInfo();   //<-- calls SDL_GetVideoInfo();   
+	int screenWidth = info->current_w;
+	int screenHeight = info->current_h;
+	SDL_Surface* screen = SDL_SetVideoMode(screenWidth, screenHeight, 0, SDL_FULLSCREEN);
 
-	just go to the directory 
-	enter
+	//get the joysticks
+	SDL_Joystick* C1 = SDL_JoystickOpen(0);
+	SDL_Joystick* C2 = SDL_JoystickOpen(1);
+	SDL_Joystick* C3 = SDL_JoystickOpen(2);
+	SDL_Joystick* C4 = SDL_JoystickOpen(3);
+	SDL_Joystick* joysticks[] = {C1, C2, C3, C4};
 
-	make
+	//load all the sprites
+	Sprite redTeam(418, 73);
+	Sprite blueTeam(461, 73);
+	Sprite wins(247, 67);
+	Sprite playAgain(273, 64);
+	Sprite playAgainGlow(277, 70);
+	Sprite quit(136, 57);
+	Sprite quitGlow(140, 63);
+	
+	
 
-	then 
-	./Game to run
+	redTeam.Load("lib/redteam.png");
+	blueTeam.Load("lib/blueteam.png");
+	wins.Load("lib/WINS.png");
+	playAgain.Load("lib/Play-Again.png");
+	playAgainGlow.Load("lib/Play-AgainGlow.png");
+	quit.Load("lib/Quit.png");
+	quitGlow.Load("lib/QuitGlow.png");
 
-	DO NOT DO THIS HERE
 
-	g++ -c Sprite.cpp -w -lSDL
-	g++ -c Player.cpp -w -lSDL
-	g++ -c Ball.cpp -w -lSDL
-	g++ -c Goal.cpp -w -lSDL
-	g++ -c Map.cpp -w -lSDL
-	g++ Game.cpp Player.cpp Sprite.cpp Ball.cpp Goal.cpp Map.cpp -w -lSDL -o Game
-	./Game
-*/
+	//Getting numbers to make formatting nicely
+	redTeam.setX(screenWidth/2 - (350));
+	redTeam.setY(screenHeight/3);
+	blueTeam.setX(screenWidth/2 - (350));
+	blueTeam.setY(screenHeight/3);
 
+	wins.setX(redTeam.getX() + redTeam.getWidth()+20);
+	wins.setY(screenHeight/3);
+
+	playAgain.setX(screenWidth/2 - (216));
+	playAgain.setY(2*screenHeight/3);
+	playAgainGlow.setX(screenWidth/2 - (216));
+	playAgainGlow.setY(2*screenHeight/3);
+
+	quit.setX(playAgain.getX()+ playAgain.getWidth() +20);
+	quit.setY(2*screenHeight/3);
+	quitGlow.setX(playAgain.getX()+ playAgain.getWidth() +20);
+	quitGlow.setY(2*screenHeight/3);
+
+
+	int endLoop = 0;
+	SDL_Event event;
+
+	//make the default choice play again
+	bool play = true;
+
+	while (!endLoop){
+
+		//look for an event
+		while (SDL_PollEvent(&event)){
+			switch(event.type){
+				case SDL_QUIT:
+					endLoop = 1;
+					break;
+				//button pressed
+				case SDL_JOYBUTTONDOWN:
+					if(event.jbutton.button==0){
+						endLoop = 1;
+						if(play){
+							return true;
+						}
+						else{
+							return false;
+						}
+					}
+				//handle movement
+				case SDL_JOYAXISMOTION:
+					if(event.jaxis.value < -11000 && event.jaxis.axis==0){
+						play = true;
+					}
+					if(event.jaxis.value > 11000 && event.jaxis.axis==0){
+						play = false;
+					}
+					break;
+
+				case SDL_KEYDOWN:
+					switch (event.key.keysym.sym) {
+						case SDLK_ESCAPE:
+						case SDLK_q:
+							endLoop = 1;
+							break;
+					}
+			}
+		}
+		//TODO::Blit all the assets
+		if(winner){
+			redTeam.Draw(bg, redTeam.getSurface(), redTeam.getX(), redTeam.getY());
+		}
+		else{
+			blueTeam.Draw(bg, redTeam.getSurface(), blueTeam.getX(), blueTeam.getY());
+		}
+
+		wins.Draw(bg, wins.getSurface(), wins.getX(), wins.getY());
+
+		//make these switch depending on which is selected
+
+		if(play){
+			playAgainGlow.Draw(bg, playAgainGlow.getSurface(), playAgainGlow.getX(), playAgainGlow.getY());
+			quit.Draw(bg, quit.getSurface(), quit.getX(), quit.getY());
+		}
+		else{
+			playAgain.Draw(bg, playAgain.getSurface(), playAgain.getX(), playAgain.getY());
+			quitGlow.Draw(bg,quitGlow.getSurface(), quitGlow.getX(), quitGlow.getY()); 
+		}
+
+		SDL_BlitSurface(bg, NULL, screen, NULL);
+		SDL_UpdateRect(screen, 0, 0, 0, 0);
+
+	}
+
+}
 
 void gameLoop(){
 
@@ -64,13 +167,13 @@ void gameLoop(){
 
 	//create Players
 	Player P1(speed, 1, 30, 30);
-	P1.Load("lib/green.bmp");
+	P1.Load("lib/lightGreen.bmp");
 	Player P2(speed , 1, 30, 30);
-	P2.Load("lib/green.bmp");
+	P2.Load("lib/lightGreen.bmp");
 	Player P3(speed, 0, 30, 30);
-	P3.Load("lib/red.bmp");
+	P3.Load("lib/lightRed.bmp");
 	Player P4(speed, 0, 30, 30);
-	P4.Load("lib/red.bmp");
+	P4.Load("lib/lightRed.bmp");
 
 	//starting points
 	P1.setX(screenWidth/2 - 3*P1.getWidth());
@@ -326,7 +429,11 @@ void gameLoop(){
 
 				if(goals[i].getFillY() >= goals[i].getY() + goals[i].getHeight()){
 					std::cout<<"Team "<<i<<" Wins!"<< std::endl;
-					gameover =1;
+					
+					if(winScreen(i, map.getSurface())){
+						gameLoop();
+					}
+					gameover = 1;
 				}
 			}
 		}
