@@ -1,4 +1,5 @@
 #include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 #include "Sprite.h"
 #include <iostream>
 #include "Player.h"
@@ -30,64 +31,59 @@ To compile
 	./Game
 */
 
-int main( int argc, char* argv[] )
-{
-	/* initialize SDL */
-	SDL_Init(SDL_INIT_EVERYTHING);
 
-	/* set the title bar */
-	SDL_WM_SetCaption("Game", "Game");
+void gameLoop(){
 
 	//Define necessary constants 
-	
 	const SDL_VideoInfo* info = SDL_GetVideoInfo();   //<-- calls SDL_GetVideoInfo();   
 	int screenWidth = info->current_w;
 	int screenHeight = info->current_h;
+
+	//int screenWidth = 1920/2;
+	//int screenHeight = 1080/2;
+
 	float speed = 0.0005 * screenWidth;
 	double speedBall = 0.005 * screenWidth;
 
-	/*
-	int screenWidth = 1920/2;
-	int screenHeight = 1080/2;
-	/*
-
 	
-
 	/* create window */
 	SDL_Surface* screen = SDL_SetVideoMode(screenWidth, screenHeight, 0, SDL_FULLSCREEN);
 
-
-	/* load bitmap to temp surface */
+	/*
 	SDL_Surface* temp = SDL_LoadBMP("lib/background.bmp");
 
-	/* convert bitmap to display format */
 	SDL_Surface* bg = SDL_DisplayFormat(temp);
 
-	/* free the temp surface */
+	
 	SDL_FreeSurface(temp);
+	*/
+
+	Sprite background(screenWidth, screenHeight);
+	background.Load("lib/background.bmp");
+	SDL_Surface* bg = background.getSurface();
 
 	//create Players
-	Player P1(speed, 1, 50, 50);
+	Player P1(speed, 1, 30, 30);
 	P1.Load("lib/green.bmp");
-	Player P2(speed , 1, 50, 50);
+	Player P2(speed , 1, 30, 30);
 	P2.Load("lib/green.bmp");
-	Player P3(speed, 0, 50, 50);
+	Player P3(speed, 0, 30, 30);
 	P3.Load("lib/red.bmp");
-	Player P4(speed, 0, 50, 50);
+	Player P4(speed, 0, 30, 30);
 	P4.Load("lib/red.bmp");
 
 	//starting points
-	P1.setX(50);
-	P1.setY(50);
+	P1.setX(screenWidth/2 - 3*P1.getWidth());
+	P1.setY(screenHeight/2 - 3 * P1.getHeight());
 
-	P2.setX(150);
-	P2.setY(150);
+	P2.setX(screenWidth/2 - 3 * P2.getWidth());
+	P2.setY(screenHeight/2 + 2 * P2.getHeight());
 
-	P3.setX(200);
-	P3.setY(200);
+	P3.setX(screenWidth/2 + 2 * P3.getWidth());
+	P3.setY(screenHeight/2 - 3 * P3.getHeight());
 
-	P4.setX(250);
-	P4.setY(250);
+	P4.setX(screenWidth/2 + 2 * P4.getWidth());
+	P4.setY(screenHeight/2 + 2 * P4.getHeight());
 
 	Player players[4] = {P1, P2, P3, P4};
 
@@ -107,8 +103,8 @@ int main( int argc, char* argv[] )
 	ball.setY(screenHeight/2);
 
 	//create goals
-	Goal goalFalse(0, 100, screenHeight/2, "lib/lightRed.bmp");
-	Goal goalTrue(1, 100, screenHeight/2, "lib/lightGreen.bmp");
+	Goal goalFalse(0, screenWidth/10, screenHeight/2, "lib/lightRed.bmp");
+	Goal goalTrue(1, screenWidth/10, screenHeight/2, "lib/lightGreen.bmp");
 	goalFalse.setX(0);
 	goalFalse.setY(screenHeight/4);
 	goalTrue.setX(screenWidth-goalTrue.getWidth());
@@ -118,7 +114,7 @@ int main( int argc, char* argv[] )
 	Goal goals[] = {goalFalse, goalTrue};
 
 	//create map
-	Map map(screenWidth, screenHeight, "lib/background.bmp", goals);
+	Map map(screenWidth, screenHeight, "lib/gameBG.bmp", goals);
 
 	//Create timer
 	///Ball timer is necessary to prevent ball from constantly switchng back and forth
@@ -191,33 +187,21 @@ int main( int argc, char* argv[] )
 					break;
 
 				case SDL_JOYBUTTONDOWN:
-					std::cout<<event.jbutton.button<<std::endl;
 					//a button pressed
 					if(event.jbutton.button==0){
 						if(players[event.jbutton.which].getBall()){
 							double x = SDL_JoystickGetAxis(joysticks[event.jbutton.which],0);
 							double y = SDL_JoystickGetAxis(joysticks[event.jbutton.which],1);
-							std::cout << x << " " << y << std::endl;
 							double theta = atan(y/x);
 
 							if(x < 0){
 								theta += 3.14;
 							}
 
-							std::cout<<theta<<std::endl;
-
 							ball.getShot(theta);
 							players[event.jbutton.which].captureBall(false);
 						}
-
-						std::cout<<"a pressed\n";
-
-					}			
-					if(event.jbutton.button==9){
-
-						//DO YOUR THING KURT!
-						std::cout<<"start pressed\n";
-					}		
+					}				
 					//determine which button is which 0:a 9:start
 					break;
 
@@ -262,39 +246,42 @@ int main( int argc, char* argv[] )
 						case 0:
 							ballDT= ballTimer->getDT();
 							dif = players[i].getHeight() - (players[i].getY()-players[j].getY());
-							players[i].setY(players[i].getY()+dif/2);
-							players[j].setY(players[j].getY()-dif/2);
+							players[i].setY(players[i].getY()+dif/2 + 1);
+							players[j].setY(players[j].getY()-dif/2 -1 );
 
 							//players[i].setY(players[j].getY()+players[j].getHeight());
 							break;
 						case 1:
 							ballDT= ballTimer->getDT();
 							dif = players[i].getWidth() - (players[j].getX()-players[i].getX());
-							players[i].setX(players[i].getX()-dif/2);
-							players[j].setX(players[j].getX()+dif/2);
+							players[i].setX(players[i].getX()-dif/2 - 1);
+							players[j].setX(players[j].getX()+dif/2 + 1);
 
 							//players[i].setX(players[j].getX()-players[j].getWidth());
 							break;
 						case 2:	
 							ballDT= ballTimer->getDT();
 							dif = players[i].getHeight() - (players[j].getY()-players[i].getY());
-							players[i].setY(players[i].getY()-dif/2);
-							players[j].setY(players[j].getY()+dif/2);
+							players[i].setY(players[i].getY()-dif/2 - 1);
+							players[j].setY(players[j].getY()+dif/2 + 1);
 							
 							//players[i].setY(players[j].getY()-players[j].getHeight());
 							break;
 						case 3:
 							ballDT= ballTimer->getDT();
 							dif = players[i].getWidth() - (players[i].getX()-players[j].getX());
-							players[i].setX(players[i].getX()+dif/2);
-							players[j].setX(players[j].getX()-dif/2);
+							players[i].setX(players[i].getX()+dif/2 + 1);
+							players[j].setX(players[j].getX()-dif/2 - 1);
 
 							//players[i].setX(players[j].getX()+players[j].getWidth());
 							break;
 
 					}
 					//ball stealing
-					if(side!=-1 && (ballDT==0 || ballDT > 0)){
+					ballDT = ballTimer->getDT();
+					std::cout<<ballDT<<std::endl;
+
+					if(side!=-1 && ball.isCapturable()){
 						if(players[i].getBall()){
 							
 							players[i].captureBall(false);
@@ -335,15 +322,14 @@ int main( int argc, char* argv[] )
 		for(int i=0; i<2; i++){
 			if(ball.checkCollision(goals[i]) !=-1){
 				goals[i].incrementScore();
-				if(goals[i].getScore() >=1000){
+				std::cout<<goals[1].getScore()<<std::endl;
+
+				if(goals[i].getFillY() >= goals[i].getY() + goals[i].getHeight()){
 					std::cout<<"Team "<<i<<" Wins!"<< std::endl;
 					gameover =1;
-
 				}
 			}
 		}
-		
-
 
 		/* draw the background */
 		bg=map.updateDisplay(players, ball, goals);
@@ -351,22 +337,131 @@ int main( int argc, char* argv[] )
 
 		SDL_BlitSurface(bg, NULL, screen, NULL);
 
-
-
 		/* update the screen */
 		SDL_UpdateRect(screen, 0, 0, 0, 0);
-
 
 	}
 
 	/* free the background surface */
 	SDL_FreeSurface(bg);
 
-	/* cleanup SDL */
-	SDL_Quit();
-
 
 	delete timer;
+	delete ballTimer;
+
+}
+
+void startMenu(){
+	//Define necessary constants 
+	const SDL_VideoInfo* info = SDL_GetVideoInfo();   //<-- calls SDL_GetVideoInfo();   
+	int screenWidth = info->current_w;
+	int screenHeight = info->current_h;
+
+	//int screenWidth = 1920/2;
+	//int screenHeight = 1080/2;
+
+	float speed = 0.0005 * screenWidth;
+	double speedBall = 0.005 * screenWidth;
+
+	
+	/* create window */
+	SDL_Surface* screen = SDL_SetVideoMode(screenWidth, screenHeight, 0, SDL_FULLSCREEN);
+
+	/* load bitmap to temp surface */
+	SDL_Surface* temp = SDL_LoadBMP("lib/background.bmp");
+
+	/* convert bitmap to display format */
+	SDL_Surface* bg = SDL_DisplayFormat(temp);
+
+	/* free the temp surface */
+	SDL_FreeSurface(temp);
+
+	SDL_Joystick* C1 = SDL_JoystickOpen(0);
+	SDL_Joystick* C2 = SDL_JoystickOpen(1);
+	SDL_Joystick* C3 = SDL_JoystickOpen(2);
+	SDL_Joystick* C4 = SDL_JoystickOpen(3);
+	SDL_Joystick* joysticks[] = {C1, C2, C3, C4};
+
+
+	//display the "press start and logo"
+	Sprite titlebg(1920, 1080);
+	Sprite gamename(403, 132);
+	Sprite startbutton(253, 60);
+
+	titlebg.Load("lib/titleBG.jpg");
+	gamename.Load("lib/Zone.png");
+	startbutton.Load("lib/PRESS-START.png");
+
+	int startGame = 0;
+	SDL_Event event;
+
+	while (!startGame){
+
+
+		//look for an event
+		while (SDL_PollEvent(&event)){
+			switch(event.type){
+				case SDL_QUIT:
+					startGame = 1;
+					break;
+				//button pressed
+				case SDL_JOYBUTTONDOWN:
+					if(event.jbutton.button==9){
+						std::cout<<"STARTING GAME\n";
+						startGame = 1;
+
+						for (int i = 0; i < 7; i++) {
+							SDL_Delay(90);
+							startbutton.Load("lib/PRESS-START(1).png");
+							startbutton.Draw(bg, startbutton.getSurface(),screenWidth/2 - startbutton.getWidth()/2,screenHeight*3/4 - startbutton.getHeight()/2);
+							
+							SDL_BlitSurface(bg, NULL, screen, NULL);
+							SDL_UpdateRect(screen, 0, 0, 0, 0);
+
+							SDL_Delay(90);
+							startbutton.Load("lib/PRESS-START.png");
+							startbutton.Draw(bg, startbutton.getSurface(),screenWidth/2 - startbutton.getWidth()/2,screenHeight*3/4 - startbutton.getHeight()/2);
+
+							SDL_BlitSurface(bg, NULL, screen, NULL);
+							SDL_UpdateRect(screen, 0, 0, 0, 0);
+						}
+						gameLoop();
+						break;
+					}
+				case SDL_KEYDOWN:
+					switch (event.key.keysym.sym) {
+						case SDLK_ESCAPE:
+						case SDLK_q:
+							startGame = 1;
+							break;
+					}
+			}
+		}
+
+		titlebg.Draw(bg, titlebg.getSurface(), 0 ,0);
+		gamename.Draw(bg, gamename.getSurface(),screenWidth/2 - gamename.getWidth()/2, screenHeight/4 - gamename.getHeight()/2);
+		startbutton.Draw(bg, startbutton.getSurface(),screenWidth/2 - startbutton.getWidth()/2,screenHeight*3/4 - startbutton.getHeight()/2);
+
+		SDL_BlitSurface(bg, NULL, screen, NULL);
+		SDL_UpdateRect(screen, 0, 0, 0, 0);
+
+	}
+
+	SDL_FreeSurface(bg);
+}
+
+int main( int argc, char* argv[] )
+{
+	/* initialize SDL */
+	SDL_Init(SDL_INIT_EVERYTHING);
+
+	/* set the title bar */
+	SDL_WM_SetCaption("Zone", "Zone");
+
+	startMenu();
+
+	/* cleanup SDL */
+	SDL_Quit();
 
 	return 0;
 }

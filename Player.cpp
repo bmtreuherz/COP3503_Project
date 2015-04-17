@@ -21,30 +21,26 @@ void Player::captureBall(){
 
 //Once per loop this is called to move in the directions it's supposed to
 void Player::move(float dt){
-	
+
+	if(hasBall){
+		speedMult = 0.8;
+	}
+	else{
+		speedMult = 1;
+	}
+
 	if(moveY>0){
-		
-		this->y += speed * dt;
-		
+		this->y += speedMult * speed * dt;
 	}
 	else if(moveY <0){
-	
-		
-		this->y -= speed * dt;
-		
+		this->y -= speedMult * speed * dt;
 	}
 
 	if(moveX >0){
-	
-
-		this->x += speed * dt;
-	
+		this->x += speedMult * speed * dt;
 }
 	else if(moveX < 0){
-	
-	
-		this->x -= speed * dt;
-		
+		this->x -= speedMult * speed * dt;
 	}
 
 }

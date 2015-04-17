@@ -1,4 +1,5 @@
 #include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 #include "Sprite.h"
 #include <iostream>
 
@@ -43,7 +44,7 @@ void Sprite::Load(char* File){
 	SDL_Surface* optimized = NULL;
 
 	//Make sure that the file exists
-	if((temp = SDL_LoadBMP(File)) == NULL){
+	if((temp = IMG_Load(File)) == NULL){
 		std::cout << "The file path does not exist" << std::endl;
 		this->surface = NULL;
 	}

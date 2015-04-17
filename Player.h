@@ -9,6 +9,7 @@ class Player : public Sprite{
 	double speed;
 	bool hasBall;
 	bool team;
+	double speedMult;
 
 
 
@@ -19,6 +20,7 @@ public:
 		this->speed = speed;
 		this->team = team;
 		this->hasBall = false;
+		speedMult = 1;
 
 		moveX=0;
 		moveY=0;

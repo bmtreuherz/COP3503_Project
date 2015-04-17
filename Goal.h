@@ -22,6 +22,9 @@ public:
 
 	}
 
+	int getFillX();
+	int getFillY();
+
 	void incrementScore();
 
 	int getScore();

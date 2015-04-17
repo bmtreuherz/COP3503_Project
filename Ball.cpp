@@ -12,8 +12,8 @@ void Ball::move(double dt, int screenWidth, int screenHeight){
 
 		count++; 
 
-		this->x += 0.2 * speedX * dt;
-		this->y += 0.2 * speedY * dt;
+		this->x += 0.3 * speedX * dt;
+		this->y += 0.3 * speedY * dt;
 
 	
 
@@ -25,26 +25,37 @@ void Ball::move(double dt, int screenWidth, int screenHeight){
 			speedY *=-1;
 		}
 
-		if(count > 20){
+		if(count > 2){
 			capturable = true;
 		}
 
-		std::cout<<count<<std::endl;
+		if(count % 10 == 0){
+			speedX *= 0.95;
+			speedY *= 0.95;
+		}
+		//std::cout<<count<<std::endl;
 
 
 	}
 
 	else{
+
+		count++;
+
 		this->x = captor->getX() + captor->getWidth()/2 - this->getWidth()/2;
 		this->y = captor->getY() + captor->getHeight()/2 - this->getHeight()/2;
+
+		if(count >10){
+			capturable = true;
+		}
 	}
-
-
 
 }
 
 void Ball::getCaptured(Player* captor){
 	this->captor = captor;
+	capturable = false;
+	count = 0;
 }
 bool Ball::isCapturable(){
 	return capturable;
@@ -54,6 +65,7 @@ void Ball::getShot(double theta){
 	this->captor = NULL;
 	this->speedX = speedMax * cos(theta);
 	this->speedY = speedMax * sin(theta);
+
 	this->theta = theta; 
 	capturable = false;
 	count = 0;

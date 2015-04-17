@@ -23,10 +23,16 @@ void Goal::incrementScore(){
 
     Draw(this->surface, *this->fillGoal);
     
-
 }
 
 int Goal::getScore(){
     return score;
+}
+
+int Goal::getFillX(){
+    return fillGoal->getX();
+}
+int Goal::getFillY(){
+    return fillGoal->getY();
 }
 
