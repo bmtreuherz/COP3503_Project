@@ -20,6 +20,8 @@ void Player::captureBall(){
 //Change boolean values of whether or not to move in that direction based on key input
 
 //Once per loop this is called to move in the directions it's supposed to
+
+
 void Player::move(float dt){
 
 	if(hasBall){

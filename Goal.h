@@ -24,10 +24,13 @@ public:
 
 	int getFillX();
 	int getFillY();
+	
+	Sprite* getFillGoal();
 
 	void incrementScore();
 
 	int getScore();
+	void setScore(int score);
 
 };
 #endif

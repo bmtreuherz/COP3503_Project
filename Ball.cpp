@@ -7,8 +7,9 @@
 void Ball::move(double dt, int screenWidth, int screenHeight){
 
 
-
 	if(captor==NULL){
+
+		//std::cout<<"X is: " << x << " Y is: " << y << std::endl;
 
 		count++; 
 

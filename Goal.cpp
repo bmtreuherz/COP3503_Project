@@ -13,7 +13,7 @@ void Goal::incrementScore(){
         fillGoal->setY(this->getY());
     }
 
-    if(score % 10 == 0){
+    if(score % 20 == 0){
         this->fillGoal->setX(this->fillGoal->getX() + this->fillGoal->getWidth());
     }
     if(this->fillGoal->getX() >= this->getX()+this->getWidth()){
@@ -21,12 +21,21 @@ void Goal::incrementScore(){
         this->fillGoal->setY(this->fillGoal->getY() + this->fillGoal->getHeight());
     }
 
-    Draw(this->surface, *this->fillGoal);
+   // Draw(this->surface, this->fillGoal->getSurface(), fillGoal->getX(), fillGoal->getY());
     
 }
 
 int Goal::getScore(){
     return score;
+}
+
+void Goal::setScore(int score){
+    this->score = score;
+
+}
+
+Sprite* Goal::getFillGoal(){
+    return fillGoal;
 }
 
 int Goal::getFillX(){

@@ -10,6 +10,7 @@ class Player : public Sprite{
 	bool hasBall;
 	bool team;
 	double speedMult;
+	bool ready;
 
 
 
@@ -21,6 +22,7 @@ public:
 		this->team = team;
 		this->hasBall = false;
 		speedMult = 1;
+		
 
 		moveX=0;
 		moveY=0;
@@ -37,5 +39,6 @@ public:
 	bool getBall();
 	//Once per loop this is called to move in the directions it's supposed to
 	void move(float dt);
+
 };
 #endif

@@ -7,6 +7,7 @@
 Sprite::Sprite(int width, int height){
 	this->width = width;
 	this->height = height;
+	ready = false;
 }
 
 int Sprite::getX(){
@@ -78,7 +79,7 @@ SDL_Surface* Sprite::returnASurface(char* File){
 }
 
 void Sprite::Draw(SDL_Surface* dest, Sprite sprite){
-
+/*
    SDL_Surface* src = sprite.getSurface();
    SDL_Rect  destR;
 
@@ -95,6 +96,18 @@ void Sprite::Draw(SDL_Surface* dest, Sprite sprite){
    srcR.h = sprite.getHeight();
 
    SDL_BlitSurface(src, &srcR, dest, &destR);
+
+   */
+   SDL_Rect  destR;
+
+   destR.x = sprite.getX();
+   destR.y = sprite.getY();
+
+
+   SDL_BlitSurface(sprite.getSurface(), NULL, dest, &destR);
+
+
+
 }
 void Sprite::Draw(SDL_Surface* dest, SDL_Surface* src, int x, int y){
 
@@ -218,4 +231,11 @@ int Sprite::checkCollision(Sprite other){
 			return 0;
 		}	
 	}
+}
+bool Sprite::isReady(){
+	return ready;
+}
+
+void Sprite::setReady(bool ready){
+	this->ready = ready;
 }

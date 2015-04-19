@@ -10,6 +10,7 @@ protected:
 	int width;
 	int height;
 	SDL_Surface* surface;
+	bool ready;
 
 public:
 	Sprite(int width, int height);
@@ -29,6 +30,8 @@ public:
 	void Draw(SDL_Surface* dest, Sprite s);
 	void Draw(SDL_Surface* dest, SDL_Surface* src, int x,int y );
 	int checkCollision(Sprite other);
+	bool isReady();
+	void setReady(bool ready);
 
 };
 #endif
