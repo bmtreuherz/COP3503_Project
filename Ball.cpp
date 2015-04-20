@@ -30,7 +30,7 @@ void Ball::move(double dt, int screenWidth, int screenHeight, Mix_Chunk* hitWall
 			
 		}
 
-		if(count > 1){
+		if(count > 5){
 			capturable = true;
 		}
 

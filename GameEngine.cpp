@@ -295,7 +295,7 @@ void GameEngine::teamSelection(){
 
 
 
-		if(readyCount ==2){
+		if(readyCount ==4){
 			endLoop = 1;
 			this->gameLoop(teams);
 		}
@@ -385,7 +385,7 @@ bool GameEngine::startMenu(){
 	SDL_FreeSurface(bg);
 
 }
-
+//the main game loop
 void GameEngine::gameLoop(int teams[4]){
 
 	float speed = 0.0003 * screenWidth;
