@@ -13,16 +13,13 @@ void Goal::incrementScore(){
         fillGoal->setY(this->getY());
     }
 
-    if(score % 20 == 0){
+    if(score % 12 == 0){
         this->fillGoal->setX(this->fillGoal->getX() + this->fillGoal->getWidth());
     }
     if(this->fillGoal->getX() >= this->getX()+this->getWidth()){
         this->fillGoal->setX(this->getX());
         this->fillGoal->setY(this->fillGoal->getY() + this->fillGoal->getHeight());
-    }
-
-   // Draw(this->surface, this->fillGoal->getSurface(), fillGoal->getX(), fillGoal->getY());
-    
+    }    
 }
 
 int Goal::getScore(){

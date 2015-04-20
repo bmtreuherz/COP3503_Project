@@ -1,5 +1,6 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include <SDL/SDL_mixer.h>
 #include "Sprite.h"
 #include <iostream>
 #include "Player.h"
@@ -9,6 +10,7 @@
 #include "Map.h"
 #include <math.h>
 #include "GameEngine.h"
+#include "Music.h"
 
 GameEngine::GameEngine(int screenWidth, int screenHeight){
 	//initialize the screen
@@ -26,6 +28,14 @@ GameEngine::GameEngine(int screenWidth, int screenHeight){
 	for(int i=0; i<4; i++){
 		this->joysticks[i] = joys[i];
 	}
+
+	//audio files
+	Music *temp = new Music();
+	music = temp;
+	music->initAudio();
+	temp = NULL;
+	delete temp;
+
 }
 
 void GameEngine::teamSelection(){
@@ -105,6 +115,12 @@ void GameEngine::teamSelection(){
 	int dt3 = 1100;
 	int dt4 = 1010;
 
+
+	//If there is no music playing
+    if( Mix_PlayingMusic() == 0 ){
+    	Mix_PlayMusic(music->getTitleScreen(), -1);
+    }
+
 	//make the default choice play again
 	while (!endLoop){
 		//look for an event
@@ -121,9 +137,12 @@ void GameEngine::teamSelection(){
 							
 							if(players[event.jbutton.which].isReady()){
 								players[event.jbutton.which].setReady(false);
+								Mix_PlayChannel(-1, music->getDeselectTeam(), 0);
 							}
 							else{
 								players[event.jbutton.which].setReady(true);
+								Mix_PlayChannel(-1, music->getSelectTeam(), 0);
+
 							}
 						}
 					}
@@ -135,39 +154,47 @@ void GameEngine::teamSelection(){
 							switch (event.jaxis.which){
 								case 0:
 									if(players[0].getX() == xMiddle && timer1->getDT() > 85){
+										Mix_PlayChannel(-1, music->getSwitchTeam(), 0);
 										players[0].setX(xBlue);
 									}
 
 									else if (players[0].getX()==xRed){
 										players[0].setX(xMiddle);
+										Mix_PlayChannel(-1, music->getSwitchTeam(), 0);
 										dt1 = timer1->getDT();
 									}
 									break;
 								case 1:
 									if(players[1].getX() == xMiddle && timer2->getDT() >85){
 										players[1].setX(xBlue);
+										Mix_PlayChannel(-1, music->getSwitchTeam(), 0);
 									}
 									else if (players[1].getX()==xRed){
 										players[1].setX(xMiddle);
 										dt2 = timer2->getDT();
+										Mix_PlayChannel(-1, music->getSwitchTeam(), 0);
 									}								
 									break;
 								case 2:
 									if(players[2].getX() == xMiddle && timer3->getDT()>85){
 										players[2].setX(xBlue);
+										Mix_PlayChannel(-1, music->getSwitchTeam(), 0);
 									}
 									else if (players[2].getX()==xRed){
 										players[2].setX(xMiddle);
 										dt3 = timer3->getDT();
+										Mix_PlayChannel(-1, music->getSwitchTeam(), 0);
 									}
 									break;
 								case 3:
 									if(players[3].getX() == xMiddle && timer4->getDT()>85){
 										players[3].setX(xBlue);
+										Mix_PlayChannel(-1, music->getSwitchTeam(), 0);
 									}
 									else if (players[0].getX()==xRed){
 										players[3].setX(xMiddle);
 										dt4 = timer4->getDT();
+										Mix_PlayChannel(-1, music->getSwitchTeam(), 0);
 										
 									}
 									break;
@@ -179,38 +206,46 @@ void GameEngine::teamSelection(){
 								case 0:
 									if(players[0].getX() == xMiddle && timer1->getDT() > 85){
 										players[0].setX(xRed);	
+										Mix_PlayChannel(-1, music->getSwitchTeam(), 0);
 									}
 									else if (players[0].getX()==xBlue){
 										dt1 = timer1->getDT();
 										players[0].setX(xMiddle);
+										Mix_PlayChannel(-1, music->getSwitchTeam(), 0);
 									}
 									break;
 								case 1:
 									if(players[1].getX() == xMiddle && timer2->getDT() > 85){
 										players[1].setX(xRed);
+										Mix_PlayChannel(-1, music->getSwitchTeam(), 0);
 									}
 									else if (players[1].getX()==xBlue){
 										players[1].setX(xMiddle);
 										timer2->getDT();
+										Mix_PlayChannel(-1, music->getSwitchTeam(), 0);
 									}
 									break;							
 
 								case 2:
 									if(players[2].getX() == xMiddle && timer3->getDT() > 85){
 										players[2].setX(xRed);
+										Mix_PlayChannel(-1, music->getSwitchTeam(), 0);
 									}
 									else if (players[2].getX()==xBlue){
 										players[2].setX(xMiddle);
 										timer3->getDT();
+										Mix_PlayChannel(-1, music->getSwitchTeam(), 0);
 									}
 									break;
 								case 3:
 									if(players[3].getX() == xMiddle && timer4->getDT() > 85){
 										players[3].setX(xRed);
+										Mix_PlayChannel(-1, music->getSwitchTeam(), 0);
 									}
 									else if (players[0].getX()==xBlue){
 										players[3].setX(xMiddle);
 										timer4->getDT();
+										Mix_PlayChannel(-1, music->getSwitchTeam(), 0);
 									}
 									break;
 							}
@@ -292,6 +327,8 @@ bool GameEngine::startMenu(){
 	int startGame = 0;
 	SDL_Event event;
 
+	Mix_PlayMusic(music->getTitleScreen(), -1);
+
 	while (!startGame){
 
 		//look for an event
@@ -306,6 +343,7 @@ bool GameEngine::startMenu(){
 					if(event.jbutton.button==9){
 						std::cout<<"STARTING GAME\n";
 						startGame = 1;
+						Mix_PlayChannel(-1, music->getStartSound(), 0);
 
 						for (int i = 0; i < 7; i++) {
 							SDL_Delay(90);
@@ -350,18 +388,8 @@ bool GameEngine::startMenu(){
 
 void GameEngine::gameLoop(int teams[4]){
 
-	float speed = 0.0005 * screenWidth;
-	double speedBall = 0.005 * screenWidth;
-
-	
-	/*
-	SDL_Surface* temp = SDL_LoadBMP("lib/background.bmp");
-
-	SDL_Surface* bg = SDL_DisplayFormat(temp);
-
-	
-	SDL_FreeSurface(temp);
-	*/
+	float speed = 0.0003 * screenWidth;
+	double speedBall = 0.003 * screenWidth;	
 
 	Sprite background(screenWidth, screenHeight);
 	background.Load("lib/background.bmp");
@@ -429,6 +457,8 @@ void GameEngine::gameLoop(int teams[4]){
 	Goal blueGoal1(1, 150, 150, "lib/BlueFill.png");
 	Goal blueGoal2(1, 150, 150, "lib/BlueFill.png");
 
+//old map
+/*
 	redGoal1.setX(0);
 	redGoal1.setY(0);
 	redGoal2.setX(screenWidth/2 - redGoal2.getWidth()/2);
@@ -437,6 +467,24 @@ void GameEngine::gameLoop(int teams[4]){
 	blueGoal1.setY(screenHeight-blueGoal1.getHeight());
 	blueGoal2.setX(screenWidth/2 - redGoal2.getWidth()/2);
 	blueGoal2.setY(screenHeight/2-blueGoal2.getHeight());
+	blueGoal1.Load("lib/BlueGoal.png");
+	blueGoal2.Load("lib/BlueGoal.png");
+	redGoal1.Load("lib/RedGoal.png");
+	redGoal2.Load("lib/RedGoal.png");
+	Goal goals[4] = { blueGoal1, blueGoal2, redGoal1, redGoal2};
+	int highestRed=0;
+	int highestBlue=0;
+*/
+
+	//new map
+	redGoal1.setX(0);
+	redGoal1.setY(0);
+	redGoal2.setX(screenWidth/2 + redGoal2.getWidth()/4);
+	redGoal2.setY(screenHeight/2 - redGoal2.getHeight()/2);
+	blueGoal1.setX(screenWidth-blueGoal1.getWidth());
+	blueGoal1.setY(screenHeight-blueGoal1.getHeight());
+	blueGoal2.setX(screenWidth/2 - blueGoal2.getWidth() - blueGoal2.getWidth()/4);
+	blueGoal2.setY(screenHeight/2-blueGoal2.getHeight()/2);
 	blueGoal1.Load("lib/BlueGoal.png");
 	blueGoal2.Load("lib/BlueGoal.png");
 	redGoal1.Load("lib/RedGoal.png");
@@ -454,9 +502,13 @@ void GameEngine::gameLoop(int teams[4]){
 	Timer* ballTimer = new Timer();
 	float ballDT=0;
 	float dt=0;
+	bool isFilling = false;
+	int goal = -1;
 
 	SDL_Event event;
 	int gameover = 0;
+
+	Mix_PlayMusic(music->getGameSong(), -1);
 
 	/* message pump */
 	while (!gameover)
@@ -533,7 +585,7 @@ void GameEngine::gameLoop(int teams[4]){
 								theta += 3.14;
 							}
 
-
+							Mix_PlayChannel(-1, music->getShoot(), 0);
 							ball.getShot(theta);
 							players[event.jbutton.which].captureBall(false);
 						}
@@ -563,11 +615,13 @@ void GameEngine::gameLoop(int teams[4]){
 				if(ball.checkCollision(players[i]) !=-1 && ball.isCapturable()){
 					ball.getCaptured(&players[i]);
 					players[i].captureBall(true);
+					Mix_PlayChannel(-1, music->getSteal(), 0);
+
 				}	
 			}
 		}
 
-		ball.move(dt, screenWidth, screenHeight);
+		ball.move(dt, screenWidth, screenHeight, music->getBallCollision());
 
 		//check to see if the ball collides with a player
 
@@ -618,14 +672,14 @@ void GameEngine::gameLoop(int teams[4]){
 
 					if(side!=-1 && ball.isCapturable()){
 						if(players[i].getBall()){
-							
+							Mix_PlayChannel(-1, music->getSteal(), 0);
 							players[i].captureBall(false);
 							players[j].captureBall(true);
 							ball.getCaptured(&players[j]);
 						}
 						else if(players[j].getBall()){
 					
-
+							Mix_PlayChannel(-1, music->getSteal(), 0);
 							players[j].captureBall(false);
 							players[i].captureBall(true);
 							ball.getCaptured(&players[i]);
@@ -676,8 +730,27 @@ void GameEngine::gameLoop(int teams[4]){
 			}
 
 
-
 			if(ball.checkCollision(goals[i]) !=-1){
+				if(goals[i].getFillY() >= goals[i].getY() + goals[i].getHeight()){
+					Mix_HaltMusic();
+					Mix_PlayChannel(0, music->getStartSound(), 0);
+					
+					
+					if(this->winScreen(i, map.getSurface())){
+						//stop music
+						
+						this->teamSelection();
+					}
+					gameover = 1;
+				}
+
+
+				if(!isFilling){
+					Mix_VolumeChunk(music->getFillGoal(), 128);
+					Mix_PlayChannel(-1, music->getFillGoal(), 0);
+					goal = i;
+				}
+				
 				goals[i].incrementScore();
 				if(i<2){
 					highestBlue = goals[i].getScore();
@@ -686,13 +759,14 @@ void GameEngine::gameLoop(int teams[4]){
 					highestRed= goals[i].getScore();
 				}
 
-				if(goals[i].getFillY() >= goals[i].getY() + goals[i].getHeight()){
-					
-					if(this->winScreen(i, map.getSurface())){
-						this->teamSelection();
-					}
-					gameover = 1;
-				}
+
+				isFilling = true;
+			}
+			if(ball.checkCollision(goals[i]) ==-1 && i == goal){
+				Mix_VolumeChunk(music->getFillGoal(), 0);
+			}
+			else{
+				isFilling = false;
 			}
 		}
 
@@ -707,14 +781,20 @@ void GameEngine::gameLoop(int teams[4]){
 
 	}
 
+	//stop music
+	Mix_HaltMusic();
+
 	/* free the background surface */
 	SDL_FreeSurface(bg);
+	
 
 
 	delete timer;
 	delete ballTimer;
 
 }
+
+
 
 bool GameEngine::winScreen(int winner, SDL_Surface* bg){
 
@@ -775,6 +855,8 @@ bool GameEngine::winScreen(int winner, SDL_Surface* bg){
 				//button pressed
 				case SDL_JOYBUTTONDOWN:
 					if(event.jbutton.button==0){
+						Mix_PlayChannel(-1, music->getSelectTeam(), 0);
+
 						endLoop = 1;
 						if(play){
 							return true;
@@ -786,9 +868,15 @@ bool GameEngine::winScreen(int winner, SDL_Surface* bg){
 				//handle movement
 				case SDL_JOYAXISMOTION:
 					if(event.jaxis.value < -11000 && event.jaxis.axis==0){
+						if(play == false){
+							Mix_PlayChannel(-1, music->getChooseMenu(), 0);
+						}
 						play = true;
 					}
 					if(event.jaxis.value > 11000 && event.jaxis.axis==0){
+						if(play == true){
+							Mix_PlayChannel(-1, music->getChooseMenu(), 0);
+						}
 						play = false;
 					}
 					break;
@@ -802,6 +890,9 @@ bool GameEngine::winScreen(int winner, SDL_Surface* bg){
 					}
 			}
 		}
+
+		
+
 		//TODO::Blit all the assets
 		if(winner<2){
 			blueTeam.Draw(bg, blueTeam.getSurface(), blueTeam.getX(), blueTeam.getY());
@@ -824,9 +915,11 @@ bool GameEngine::winScreen(int winner, SDL_Surface* bg){
 			quitGlow.Draw(bg,quitGlow.getSurface(), quitGlow.getX(), quitGlow.getY()); 
 		}
 
+
 		SDL_BlitSurface(bg, NULL, screen, NULL);
 		SDL_UpdateRect(screen, 0, 0, 0, 0);
 
 	}
+
 
 }

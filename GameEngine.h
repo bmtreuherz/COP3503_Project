@@ -1,4 +1,6 @@
 #include <SDL/SDL.h>
+#include <SDL/SDL_mixer.h>
+#include "Music.h"
 
 #ifndef GAMEENGINE_H
 #define GAMEENGINE_H
@@ -8,6 +10,9 @@ class GameEngine{
 	int screenWidth;
 	SDL_Surface* screen;
 	SDL_Joystick** joysticks;
+
+	Music *music;
+
 
 public:
 	GameEngine(int screenWidth, int screenHeight);

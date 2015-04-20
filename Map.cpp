@@ -8,8 +8,8 @@
 
 SDL_Surface* Map::updateDisplay(Player players[], Ball ball, Goal goals[]){
 	//update screen
-	Sprite surrounder(38,38);
-	surrounder.Load("lib/surrounder.bmp");
+	Sprite surrounder(64,64);
+	surrounder.Load("lib/Circle.png");
 	//blank slate
 	this->Draw(surface, background, 0,0);
 
@@ -19,10 +19,6 @@ SDL_Surface* Map::updateDisplay(Player players[], Ball ball, Goal goals[]){
 	for(int i = 0; i < 4; i++){
 		this->Draw(this->surface, goals[i]);
 
-		if(goals[i].getFillGoal()->getY()){
-
-		}
-
 		for(int j=goals[i].getX(); j<=goals[i].getFillGoal()->getX(); j+=goals[i].getFillGoal()->getWidth()){
 			for(int k=goals[i].getY(); k<=goals[i].getFillGoal()->getY(); k+=goals[i].getFillGoal()->getHeight()){
 				if(k < goals[i].getFillGoal()->getY()){
@@ -30,8 +26,9 @@ SDL_Surface* Map::updateDisplay(Player players[], Ball ball, Goal goals[]){
 						this->Draw(this->surface, goals[i].getFillGoal()->getSurface(), x, k);
 					}
 				}
-
-				this->Draw(this->surface, goals[i].getFillGoal()->getSurface(), j,k);
+				if(k< goals[i].getY() + goals[i].getHeight()){
+					this->Draw(this->surface, goals[i].getFillGoal()->getSurface(), j,k);
+				}
 			}	
 		}
 
@@ -40,7 +37,7 @@ SDL_Surface* Map::updateDisplay(Player players[], Ball ball, Goal goals[]){
 	//Display all the players
 	for(int i=0; i < 4; i++){
 		if(players[i].getBall()){
-			Draw(this->surface, surrounder.getSurface(), players[i].getX()- 3, players[i].getY() - 3);
+			Draw(this->surface, surrounder.getSurface(), (players[i].getX() + players[i].getWidth()/2) - surrounder.getWidth()/2, (players[i].getY() + players[i].getHeight()/2) - surrounder.getHeight()/2);
 		}
 		this->Draw(this->surface, players[i]);
 	}

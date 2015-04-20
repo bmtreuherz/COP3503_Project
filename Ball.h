@@ -1,4 +1,6 @@
 #include <SDL/SDL.h>
+#include <SDL/SDL_mixer.h>
+#include "Music.h"
 #include "Sprite.h"
 #include "Player.h"
 
@@ -27,11 +29,8 @@ public:
 
 
 	}
-	~Ball(){
-		//delete[] captor;
-	}
 
-	void move(double dt, int screenWidth, int screenHeight);
+	void move(double dt, int screenWidth, int screenHeight, Mix_Chunk* hitWall);
 	void getCaptured(Player* captor);
 	Player* getCaptor();
 	void getShot(double theta);

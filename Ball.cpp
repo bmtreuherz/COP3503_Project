@@ -1,15 +1,15 @@
 #include <SDL/SDL.h>
+#include <SDL/SDL_mixer.h>
+#include "Music.h"
 #include "Ball.h"
 #include <iostream>
 #include "Sprite.h"
 #include <math.h>
 
-void Ball::move(double dt, int screenWidth, int screenHeight){
+void Ball::move(double dt, int screenWidth, int screenHeight, Mix_Chunk* hitWall){
 
 
 	if(captor==NULL){
-
-		//std::cout<<"X is: " << x << " Y is: " << y << std::endl;
 
 		count++; 
 
@@ -19,14 +19,18 @@ void Ball::move(double dt, int screenWidth, int screenHeight){
 	
 
 		if((this->x > screenWidth - this->width) || this->x < 0){
+			Mix_PlayChannel(-1, hitWall, 0);
 			speedX *=-1;
+			
 		}
 
 		if((this->y > screenHeight - this->height) || this->y < 0){
+			Mix_PlayChannel(-1, hitWall, 0);
 			speedY *=-1;
+			
 		}
 
-		if(count > 2){
+		if(count > 1){
 			capturable = true;
 		}
 
@@ -34,8 +38,6 @@ void Ball::move(double dt, int screenWidth, int screenHeight){
 			speedX *= 0.95;
 			speedY *= 0.95;
 		}
-		//std::cout<<count<<std::endl;
-
 
 	}
 
