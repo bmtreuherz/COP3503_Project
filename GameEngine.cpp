@@ -12,6 +12,7 @@
 #include "GameEngine.h"
 #include "Music.h"
 
+
 GameEngine::GameEngine(int screenWidth, int screenHeight){
 	//initialize the screen
 	this->screenWidth = screenWidth;
@@ -38,6 +39,7 @@ GameEngine::GameEngine(int screenWidth, int screenHeight){
 
 }
 
+//Brings up the screen where you can choose sides
 void GameEngine::teamSelection(){
 
 	/* load bitmap to temp surface */
@@ -263,9 +265,8 @@ void GameEngine::teamSelection(){
 			}
 		}
 
+		//display everything
 		titlebg.Draw(bg, titlebg.getSurface(), 0, 0);
-
-		//TODO::Blit all the assets
 
 		int teams[4];
 		int readyCount = 0;
@@ -303,7 +304,7 @@ void GameEngine::teamSelection(){
 	}
 }
 
-
+//creates the screen for the start menu
 bool GameEngine::startMenu(){
 
 	/* load bitmap to temp surface */
@@ -327,6 +328,8 @@ bool GameEngine::startMenu(){
 	int startGame = 0;
 	SDL_Event event;
 
+
+	//start music and begin loop
 	Mix_PlayMusic(music->getTitleScreen(), -1);
 
 	while (!startGame){
@@ -345,6 +348,7 @@ bool GameEngine::startMenu(){
 						startGame = 1;
 						Mix_PlayChannel(-1, music->getStartSound(), 0);
 
+						//makes the start button blink before moving on
 						for (int i = 0; i < 7; i++) {
 							SDL_Delay(90);
 							startbutton.Load("lib/PRESS-START(1).png");
@@ -372,6 +376,8 @@ bool GameEngine::startMenu(){
 					}
 			}
 		}
+
+		//display everything
 
 		titlebg.Draw(bg, titlebg.getSurface(), 0 ,0);
 		gamename.Draw(bg, gamename.getSurface(),screenWidth/2 - gamename.getWidth()/2, screenHeight/4 - gamename.getHeight()/2);
@@ -795,7 +801,7 @@ void GameEngine::gameLoop(int teams[4]){
 }
 
 
-
+//display the screen that comes up when a team has won
 bool GameEngine::winScreen(int winner, SDL_Surface* bg){
 
 	//load all the sprites
@@ -806,7 +812,6 @@ bool GameEngine::winScreen(int winner, SDL_Surface* bg){
 	Sprite playAgainGlow(277, 70);
 	Sprite quit(136, 57);
 	Sprite quitGlow(140, 63);
-	
 	
 
 	redTeam.Load("lib/redteam.png");

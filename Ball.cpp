@@ -6,17 +6,16 @@
 #include "Sprite.h"
 #include <math.h>
 
+//handles ball movement
 void Ball::move(double dt, int screenWidth, int screenHeight, Mix_Chunk* hitWall){
 
-
+	//This is the movement that takes place whenever the ball is not in captivity
 	if(captor==NULL){
 
 		count++; 
 
 		this->x += 0.3 * speedX * dt;
 		this->y += 0.3 * speedY * dt;
-
-	
 
 		if((this->x > screenWidth - this->width) || this->x < 0){
 			Mix_PlayChannel(-1, hitWall, 0);
@@ -26,8 +25,7 @@ void Ball::move(double dt, int screenWidth, int screenHeight, Mix_Chunk* hitWall
 
 		if((this->y > screenHeight - this->height) || this->y < 0){
 			Mix_PlayChannel(-1, hitWall, 0);
-			speedY *=-1;
-			
+			speedY *=-1;	
 		}
 
 		if(count > 5){
@@ -38,9 +36,8 @@ void Ball::move(double dt, int screenWidth, int screenHeight, Mix_Chunk* hitWall
 			speedX *= 0.95;
 			speedY *= 0.95;
 		}
-
 	}
-
+	//when the ball is captured it will stay in the middle of the player that has it
 	else{
 
 		count++;
@@ -54,16 +51,18 @@ void Ball::move(double dt, int screenWidth, int screenHeight, Mix_Chunk* hitWall
 	}
 
 }
-
+//capture the ball
 void Ball::getCaptured(Player* captor){
 	this->captor = captor;
 	capturable = false;
 	count = 0;
 }
+
 bool Ball::isCapturable(){
 	return capturable;
 }
 
+//shoot the ball
 void Ball::getShot(double theta){
 	this->captor = NULL;
 	this->speedX = speedMax * cos(theta);
